@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Sitemap: REPLACE_WITH_YOUR_DOMAIN/sitemap.xml
+
+# Block admin areas
+Disallow: /dashboard
+Disallow: /add-product
+Disallow: /add-banner

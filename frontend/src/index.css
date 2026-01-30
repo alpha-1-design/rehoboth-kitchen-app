@@ -1,0 +1,66 @@
+:root { --primary: #2C5530; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  /* Premium Mesh Gradient Background */
+  background: radial-gradient(at top left, #e3f2fd, #f1f8e9, #ffffff);
+  min-height: 100vh;
+  font-family: 'Poppins', -apple-system, sans-serif;
+  color: #333;
+}
+
+/* Glass Effect used in Profile */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.85); /* Whiter for better visibility */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border-radius: 20px;
+}
+
+.glass-header {
+  background: linear-gradient(135deg, #2C5530, #1e3b21);
+  color: white;
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+  box-shadow: 0 4px 15px rgba(44, 85, 48, 0.3);
+}
+
+/* Input Styling */
+input, select, textarea {
+  background: white;
+  border: 1px solid #ddd;
+  transition: all 0.3s ease;
+}
+input:focus, select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(44, 85, 48, 0.1);
+  outline: none;
+}
+
+::-webkit-scrollbar { display: none; }
+
+/* SKELETON ANIMATION */
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+.skeleton {
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(to right, #f0f0f0 4%, #e0e0e0 25%, #f0f0f0 36%);
+  background-size: 1000px 100%;
+}
+
+.skeleton-card {
+  width: 100%;
+  height: 200px;
+  border-radius: 20px;
+  background: #fff;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.skeleton-img { height: 140px; width: 100%; }
+.skeleton-text { height: 15px; width: 70%; margin: 10px; border-radius: 5px; }
+.skeleton-price { height: 15px; width: 40%; margin: 0 10px; border-radius: 5px; }
