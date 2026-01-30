@@ -10,9 +10,11 @@ export default defineConfig({
       devOptions: {
         enabled: true
       },
-      strategies: 'injectManifest',
-      srcDir: 'public',
-      filename: 'sw.js',
+      strategies: 'generateSW',
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,mp4}'],
+        maximumFileSizeToCacheInBytes: 70 * 1024 * 1024
+      },
       includeAssets: ['logo.png'],
       manifest: {
         name: 'Rehoboth Kitchen',
@@ -38,13 +40,5 @@ export default defineConfig({
       }
     })
   ],
-  server: {
-    proxy: {
-      '/api': {
-        target: 'http://localhost:5000',
-        changeOrigin: true,
-        secure: false,
-      },
-    },
-  },
 })
+
