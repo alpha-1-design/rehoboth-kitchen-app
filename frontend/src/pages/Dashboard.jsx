@@ -1,21 +1,19 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { productAPI, orderAPI, bannerAPI, supportAPI } from '../services/apiService';
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  
   const [products, setProducts] = useState([]);
-  const [orders, setOrders] = useState([]); 
+  const [orders, setOrders] = useState([]);
   const [banners, setBanners] = useState([]);
-  const [messages, setMessages] = useState([]); 
-  
+  const [messages, setMessages] = useState([]);
   const [activeTab, setActiveTab] = useState('orders');
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
-    if (!storedUser) navigate('/'); 
+    if (!storedUser) navigate('/');
     else setUser(JSON.parse(storedUser));
     fetchData();
   }, [navigate]);
@@ -23,16 +21,18 @@ const Dashboard = () => {
   const fetchData = async () => {
     try {
       const [resProd, resOrd, resBan, resMsg] = await Promise.all([
-        axios.get('http://localhost:5000/api/products'),
-        axios.get('http://localhost:5000/api/orders'),
-        axios.get('http://localhost:5000/api/banners'),
-        axios.get('http://localhost:5000/api/support') 
+        productAPI.getAll(),
+        orderAPI.getAll(),
+        bannerAPI.getAll(),
+        supportAPI.getMessages()
       ]);
-      setProducts(resProd.data);
-      setOrders(resOrd.data.reverse());
-      setBanners(resBan.data);
-      setMessages(resMsg.data.reverse());
-    } catch (err) { console.error(err); }
+      setProducts(resProd);
+      setOrders(resOrd.reverse());
+      setBanners(resBan);
+      setMessages(resMsg.reverse());
+    } catch (err) {
+      console.warn('Failed to fetch data');
+    }
   };
 
   const handleLogout = () => {
@@ -44,28 +44,65 @@ const Dashboard = () => {
   const handleReply = async (id) => {
     const reply = prompt("Enter your reply:");
     if (reply) {
-      await axios.put(`http://localhost:5000/api/support/${id}/reply`, { reply });
-      alert("Reply sent!");
-      fetchData();
+      try {
+        await supportAPI.sendMessage({ id, reply });
+        alert("Reply sent!");
+        fetchData();
+      } catch (err) {
+        alert('Failed to send reply');
+      }
     }
   };
 
-  // NEW: Delete Message
   const handleDeleteMessage = async (id) => {
-    if(confirm('Delete this message?')) {
-      await axios.delete(`http://localhost:5000/api/support/${id}`);
-      fetchData();
+    if (confirm('Delete this message?')) {
+      try {
+        await supportAPI.deleteMessage(id);
+        fetchData();
+      } catch (err) {
+        alert('Failed to delete message');
+      }
     }
   };
 
-  const handleDeleteProduct = async (id) => { if(confirm('Delete item?')) { await axios.delete(`http://localhost:5000/api/products/${id}`); fetchData(); } };
-  const handleDeleteBanner = async (id) => { if(confirm('Delete Banner?')) { await axios.delete(`http://localhost:5000/api/banners/${id}`); fetchData(); } };
-  const markDelivered = async (id) => { if(confirm('Mark Delivered?')) { await axios.put(`http://localhost:5000/api/orders/${id}`, { status: 'Delivered' }); fetchData(); } };
+  const handleDeleteProduct = async (id) => {
+    if (confirm('Delete item?')) {
+      try {
+        await productAPI.delete(id);
+        fetchData();
+      } catch (err) {
+        alert('Failed to delete product');
+      }
+    }
+  };
+
+  const handleDeleteBanner = async (id) => {
+    if (confirm('Delete Banner?')) {
+      try {
+        await bannerAPI.delete(id);
+        fetchData();
+      } catch (err) {
+        alert('Failed to delete banner');
+      }
+    }
+  };
+
+  const markDelivered = async (id) => {
+    if (confirm('Mark Delivered?')) {
+      try {
+        await orderAPI.update(id, { status: 'Delivered' });
+        fetchData();
+      } catch (err) {
+        alert('Failed to update order');
+      }
+    }
+  };
 
   const getImageUrl = (imagePath) => {
     if (!imagePath) return '';
     if (imagePath.startsWith('http')) return imagePath;
-    return `http://localhost:5000${imagePath}`;
+    const API_BASE_URL = 'https://rehoboth-backend.onrender.com';
+    return `${API_BASE_URL}${imagePath}`;
   };
 
   if (!user) return <div>Loading...</div>;
@@ -115,7 +152,7 @@ const Dashboard = () => {
             <button onClick={() => navigate('/add-product')} style={{ padding: '15px', background: '#2C5530', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 'bold' }}>+ Product</button>
             <button onClick={() => navigate('/add-banner')} style={{ padding: '15px', background: '#2980b9', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 'bold' }}>+ Banner</button>
           </div>
-          
+
           <h4 style={{marginBottom:'10px'}}>Banners</h4>
           <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '10px', marginBottom: '20px' }}>
             {banners.map((item) => (
@@ -138,7 +175,6 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* SUPPORT TAB */}
       {activeTab === 'support' && (
         <div>
           {messages.map((msg) => (
@@ -147,14 +183,13 @@ const Dashboard = () => {
               <h4 style={{margin:'0 0 5px 0'}}>{msg.name}</h4>
               <p style={{fontSize:'12px', color:'#666', margin:0}}>{msg.email}</p>
               <p style={{background:'#f0f0f0', padding:'10px', borderRadius:'5px', marginTop:'10px'}}>"{msg.message}"</p>
-              
+
               {msg.reply && <p style={{fontSize:'13px', color:'#2C5530', marginTop:'10px'}}><strong>You Replied:</strong> {msg.reply}</p>}
-              
+
               <div style={{marginTop:'10px', display:'flex', gap:'10px'}}>
                 {msg.status !== 'Replied' && (
                     <button onClick={() => handleReply(msg._id)} style={{flex:1, padding:'8px', background:'#2980b9', color:'white', border:'none', borderRadius:'5px'}}>Reply</button>
                 )}
-                {/* DELETE BUTTON */}
                 <button onClick={() => handleDeleteMessage(msg._id)} style={{flex:1, padding:'8px', background:'#e74c3c', color:'white', border:'none', borderRadius:'5px'}}>Delete</button>
               </div>
             </div>
