@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { orderAPI } from '../services/apiService';
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -8,7 +8,8 @@ const Cart = () => {
   const [total, setTotal] = useState(0);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  
+  const [loading, setLoading] = useState(false);
+
   const [details, setDetails] = useState({ name: '', email: '', phone: '', location: '' });
   const [paymentMethod, setPaymentMethod] = useState('Cash on Delivery');
 
@@ -17,20 +18,17 @@ const Cart = () => {
     const storedCart = JSON.parse(localStorage.getItem('cart') || '[]');
     setCart(storedCart);
     calculateTotal(storedCart);
-    
+
     // 2. Load User Info & Smart Auto-fill
     const user = JSON.parse(localStorage.getItem('user'));
     if(user) {
       setDetails({ 
         name: user.name, 
         email: user.email || '', 
-        // Use saved phone
         phone: user.phone || '', 
-        // Use saved GhanaPost GPS if available, otherwise blank
         location: user.ghanaPost || '' 
       });
-      
-      // Auto-select Momo if they have a saved Momo Number
+
       if (user.momoNumber) {
         setPaymentMethod('Mobile Money');
       }
@@ -55,8 +53,10 @@ const Cart = () => {
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
     if (cart.length === 0) return;
+    setLoading(true);
+    
     try {
-      await axios.post('http://localhost:5000/api/orders', {
+      await orderAPI.create({
         customerName: details.name,
         email: details.email,
         phone: details.phone,
@@ -67,7 +67,12 @@ const Cart = () => {
       });
       localStorage.removeItem('cart');
       navigate('/success');
-    } catch (err) { alert('Order failed. Please try again.'); }
+    } catch (err) {
+      console.warn('Order failed');
+      alert('Order failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const styles = {
@@ -121,29 +126,31 @@ const Cart = () => {
             ) : (
               <form onSubmit={handlePlaceOrder} style={{ marginTop: '20px', borderTop: '1px solid #eee', paddingTop: '20px' }}>
                 <h3 style={{marginBottom:'15px', color:'#2C5530'}}>Delivery Details</h3>
-                
+
                 <label style={styles.label}>Full Name</label>
                 <input required value={details.name} onChange={e => setDetails({...details, name: e.target.value})} style={styles.input} />
-                
+
                 <label style={styles.label}>Email Address</label>
                 <input required type="email" value={details.email} onChange={e => setDetails({...details, email: e.target.value})} style={styles.input} placeholder="you@example.com" />
 
                 <label style={styles.label}>Phone Number</label>
                 <input required type="tel" value={details.phone} onChange={e => setDetails({...details, phone: e.target.value})} style={styles.input} />
-                
+
                 <label style={styles.label}>Delivery Location (GhanaPost / Landmark)</label>
                 <input required value={details.location} onChange={e => setDetails({...details, location: e.target.value})} style={styles.input} placeholder="e.g. GA-123-4567" />
-                
+
                 <h3 style={{marginTop:'20px', marginBottom:'10px', color:'#2C5530'}}>Payment</h3>
                 <div style={styles.radioGroup}>
-                    <label style={{...styles.radioLabel, border: paymentMethod === 'Cash on Delivery' ? '2px solid #2C5530' : 'none'}}>
-                        <input type="radio" name="pay" checked={paymentMethod === 'Cash on Delivery'} onChange={() => setPaymentMethod('Cash on Delivery')} /> Cash
-                    </label>
-                    <label style={{...styles.radioLabel, border: paymentMethod === 'Mobile Money' ? '2px solid #2C5530' : 'none'}}>
-                        <input type="radio" name="pay" checked={paymentMethod === 'Mobile Money'} onChange={() => setPaymentMethod('Mobile Money')} /> Momo
-                    </label>
+                  <label style={{...styles.radioLabel, border: paymentMethod === 'Cash on Delivery' ? '2px solid #2C5530' : 'none'}}>
+                    <input type="radio" name="pay" checked={paymentMethod === 'Cash on Delivery'} onChange={() => setPaymentMethod('Cash on Delivery')} /> Cash
+                  </label>
+                  <label style={{...styles.radioLabel, border: paymentMethod === 'Mobile Money' ? '2px solid #2C5530' : 'none'}}>
+                    <input type="radio" name="pay" checked={paymentMethod === 'Mobile Money'} onChange={() => setPaymentMethod('Mobile Money')} /> Momo
+                  </label>
                 </div>
-                <button type="submit" style={styles.checkoutBtn}>Confirm Order</button>
+                <button type="submit" style={styles.checkoutBtn} disabled={loading}>
+                  {loading ? 'Processing...' : 'Confirm Order'}
+                </button>
               </form>
             )}
           </div>
