@@ -12,18 +12,30 @@ const InstallPrompt = () => {
     }
 
     // 2. Listen for the install prompt event
-    window.addEventListener('beforeinstallprompt', (e) => {
+    const handleBeforeInstallPrompt = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
-    });
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
   }, []);
 
-  const handleInstall = () => {
+  const handleInstall = async () => {
     if (deferredPrompt) {
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then((choiceResult) => {
+      try {
+        deferredPrompt.prompt();
+        const choiceResult = await deferredPrompt.userChoice;
+        if (choiceResult.outcome === 'accepted') {
+          console.warn('App installed successfully');
+        }
         setDeferredPrompt(null);
-      });
+      } catch (error) {
+        console.warn('Installation error');
+      }
     } else {
       alert("To install:\n1. Tap the browser menu (3 dots)\n2. Tap 'Install App' or 'Add to Home Screen'");
     }
@@ -36,7 +48,6 @@ const InstallPrompt = () => {
     alignItems: 'center', justifyContent: 'center', gap: '10px', cursor: 'pointer'
   };
 
-  // If already installed (App Mode), HIDE the button completely
   if (isApp) return null;
 
   return (
