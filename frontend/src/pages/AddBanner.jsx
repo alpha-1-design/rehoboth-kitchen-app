@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { bannerAPI } from '../services/apiService';
 
 const AddBanner = () => {
   const [title, setTitle] = useState('');
@@ -22,13 +22,11 @@ const AddBanner = () => {
 
     setLoading(true);
     try {
-      await axios.post('/api/banners', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      await bannerAPI.create(formData);
       alert('Banner Added to Slider!');
       navigate('/dashboard');
     } catch (err) {
-      console.error(err);
+      console.warn('Failed to upload banner');
       alert('Failed to upload banner');
     } finally {
       setLoading(false);
