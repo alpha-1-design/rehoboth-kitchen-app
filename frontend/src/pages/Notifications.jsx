@@ -27,10 +27,9 @@ const Notifications = () => {
 
   const handleClear = async () => {
     try {
-      // Note: You may need to add a deleteAll endpoint to apiService
-      // For now, we'll just clear locally
+      await notificationAPI.deleteAll();
       setNotifs([]);
-      alert('Notifications cleared');
+      alert('All notifications cleared');
     } catch (err) {
       console.warn('Failed to clear notifications');
       alert('Failed to clear notifications');
@@ -48,7 +47,7 @@ const Notifications = () => {
     <div style={styles.container}>
       <div style={styles.header}>
         <h2 style={{color:'#2C5530', margin:0}}>🔔 Notifications</h2>
-        {notifs.length > 0 && <button onClick={handleClear} style={{background:'none', border:'none', color:'red', cursor:'pointer'}}>Clear All</button>}
+        {notifs.length > 0 && <button onClick={handleClear} style={{background:'none', border:'none', color:'red', cursor:'pointer', fontWeight:'bold'}}>Clear All</button>}
       </div>
 
       {loading ? (
