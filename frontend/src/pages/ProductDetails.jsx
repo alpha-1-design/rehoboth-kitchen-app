@@ -1,26 +1,36 @@
+
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import Icon from '../components/Icons'; 
+import { productAPI } from '../services/apiService';
+import Icon from '../components/Icons';
 
 const ProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
-  
+  const [loading, setLoading] = useState(true);
+
   // Review State
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
   const [refresh, setRefresh] = useState(false);
-  
+
   // Calculator State
-  const [hours, setHours] = useState(4); 
-  const KWH_RATE = 1.8; 
+  const [hours, setHours] = useState(4);
+  const KWH_RATE = 1.8;
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/api/products/${id}`)
-      .then(res => setProduct(res.data))
-      .catch(err => console.error(err));
+    const fetchProduct = async () => {
+      try {
+        const res = await productAPI.getById(id);
+        setProduct(res);
+      } catch (err) {
+        console.warn('Failed to fetch product');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProduct();
   }, [id, refresh]);
 
   const addToCart = () => {
@@ -37,25 +47,34 @@ const ProductDetails = () => {
   const submitReview = async (e) => {
     e.preventDefault();
     const user = JSON.parse(localStorage.getItem('user'));
-    if(!user) return alert("Please Login to write a review");
+    if (!user) return alert("Please Login to write a review");
 
     try {
-      await axios.post(`http://localhost:5000/api/products/${id}/reviews`, {
-        rating, comment, userName: user.name
+      // Note: You may need to add a review endpoint to apiService
+      // For now, we'll use a direct fetch or add it to productAPI
+      await fetch(`${import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com'}/api/products/${id}/reviews`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rating, comment, userName: user.name })
       });
       alert('Review Submitted!');
       setComment('');
       setRefresh(!refresh);
-    } catch (err) { alert('Failed'); }
+    } catch (err) {
+      console.warn('Failed to submit review');
+      alert('Failed to submit review');
+    }
   };
 
   const getImageUrl = (imagePath) => {
     if (!imagePath) return '';
     if (imagePath.startsWith('http')) return imagePath;
-    return `http://localhost:5000${imagePath}`;
+    const API_BASE_URL = 'https://rehoboth-backend.onrender.com';
+    return `${API_BASE_URL}${imagePath}`;
   };
 
-  if (!product) return <div>Loading...</div>;
+  if (loading) return <div style={{padding:'20px', textAlign:'center'}}>Loading...</div>;
+  if (!product) return <div style={{padding:'20px', textAlign:'center'}}>Product not found</div>;
 
   const watts = product.watts || 0;
   const dailyCost = ((watts * hours) / 1000) * KWH_RATE;
@@ -67,52 +86,46 @@ const ProductDetails = () => {
     title: { fontSize: '22px', color: '#333', fontWeight: 'bold' },
     price: { fontSize: '20px', color: '#2C5530', fontWeight: '800' },
     cat: { background: '#eee', padding: '5px 10px', borderRadius: '15px', fontSize: '12px', color: '#555' },
-    
-    // Feature Cards
     featureCard: { background: '#f9f9f9', padding: '15px', borderRadius: '12px', marginTop: '15px', borderLeft: '4px solid #2C5530' },
     featureTitle: { fontWeight: 'bold', color: '#2C5530', display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '5px' },
-    
     btn: { width: '100%', padding: '15px', background: '#2C5530', color: 'white', border: 'none', borderRadius: '10px', fontSize: '18px', fontWeight: 'bold', marginTop: '20px' },
     giftBtn: { width: '100%', padding: '12px', background: 'white', color: '#2C5530', border: '2px solid #2C5530', borderRadius: '10px', fontWeight: 'bold', marginTop: '10px' }
   };
 
   return (
     <div style={styles.container}>
-      <button onClick={() => navigate('/')} style={{background:'none', border:'none', fontSize:'20px'}}>←</button>
-      
+      <button onClick={() => navigate('/')} style={{background:'none', border:'none', fontSize:'20px', cursor:'pointer'}}>←</button>
+
       <img src={getImageUrl(product.image)} alt={product.name} style={styles.image} />
       <span style={styles.cat}>{product.category}</span>
       <h1 style={styles.title}>{product.name}</h1>
       <div style={styles.price}>GHS {product.price}</div>
       <p style={{color:'#666', marginTop:'10px'}}>{product.description}</p>
 
-      {/* 1. RECIPE CARD (Only for Kitchen) */}
       {product.recipes && (
         <div style={{...styles.featureCard, background: '#fff3cd', borderLeft: '4px solid #f1c40f'}}>
-            <div style={{...styles.featureTitle, color:'#d35400'}}>👨‍🍳 Cook with Rehoboth</div>
-            <p style={{fontSize:'13px', fontStyle:'italic'}}>Perfect for making:</p>
-            <p style={{fontWeight:'bold'}}>{product.recipes}</p>
+          <div style={{...styles.featureTitle, color:'#d35400'}}>👨‍🍳 Cook with Rehoboth</div>
+          <p style={{fontSize:'13px', fontStyle:'italic'}}>Perfect for making:</p>
+          <p style={{fontWeight:'bold'}}>{product.recipes}</p>
         </div>
       )}
 
-      {/* 2. ECG POWER CHECK */}
       {watts > 0 && (
         <div style={styles.featureCard}>
-            <div style={styles.featureTitle}>⚡ ECG Power Check</div>
-            <p style={{fontSize:'12px', color:'#555'}}>
-                Cost to run ({watts}W): <strong>GHS {monthlyCost.toFixed(2)}</strong> / month 
-                <br/>(if used {hours} hours daily)
-            </p>
-            <input type="range" min="1" max="24" value={hours} onChange={(e) => setHours(e.target.value)} style={{width:'100%', accentColor:'#2C5530'}} />
+          <div style={styles.featureTitle}>⚡ ECG Power Check</div>
+          <p style={{fontSize:'12px', color:'#555'}}>
+            Cost to run ({watts}W): <strong>GHS {monthlyCost.toFixed(2)}</strong> / month
+            <br/>(if used {hours} hours daily)
+          </p>
+          <input type="range" min="1" max="24" value={hours} onChange={(e) => setHours(e.target.value)} style={{width:'100%', accentColor:'#2C5530'}} />
         </div>
       )}
 
       <button onClick={addToCart} style={styles.btn}>Add to Cart</button>
       <button onClick={addToGiftList} style={styles.giftBtn}>🎁 Add to Gift Registry</button>
 
-      {/* REVIEWS SECTION */}
       <div style={{marginTop: '40px', borderTop: '1px solid #eee', paddingTop: '20px'}}>
-        <h3 style={{color: '#333'}}>Customer Reviews ({product.numReviews})</h3>
+        <h3 style={{color: '#333'}}>Customer Reviews ({product.numReviews || 0})</h3>
         <form onSubmit={submitReview} style={{marginBottom: '20px', background: '#f0f8f0', padding: '15px', borderRadius: '10px'}}>
           <label style={{display:'block', marginBottom:'5px', fontWeight:'bold'}}>Write a Review:</label>
           <select value={rating} onChange={(e) => setRating(e.target.value)} style={{padding:'8px', borderRadius:'5px', border:'1px solid #ddd', width:'100%'}}>
@@ -123,7 +136,7 @@ const ProductDetails = () => {
             <option value="1">1 Star - Bad</option>
           </select>
           <textarea placeholder="Share your experience..." value={comment} onChange={(e) => setComment(e.target.value)} style={{width:'100%', padding:'10px', marginTop:'10px', borderRadius:'5px', border:'1px solid #ddd'}} required />
-          <button type="submit" style={{marginTop:'10px', padding:'10px', background:'#2C5530', color:'white', border:'none', borderRadius:'5px'}}>Submit</button>
+          <button type="submit" style={{marginTop:'10px', padding:'10px', background:'#2C5530', color:'white', border:'none', borderRadius:'5px', cursor:'pointer'}}>Submit</button>
         </form>
         {(!product.reviews || product.reviews.length === 0) ? (
           <p style={{color: '#888'}}>No reviews yet.</p>
