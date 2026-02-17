@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { productAPI } from '../services/apiService';
 
 const MyReviews = () => {
   const navigate = useNavigate();
@@ -16,18 +16,14 @@ const MyReviews = () => {
 
     const fetchReviews = async () => {
       try {
-        // Fetch all products to find user's reviews
-        const res = await axios.get('http://localhost:5000/api/products');
-        const allProducts = res.data;
-        
+        const allProducts = await productAPI.getAll();
+
         const userReviews = [];
 
-        // Loop through products and filter reviews by User Name
         allProducts.forEach(product => {
           if (product.reviews && product.reviews.length > 0) {
             const myProductReviews = product.reviews.filter(r => r.name === user.name);
-            
-            // Add product details to the review so we know what we reviewed
+
             myProductReviews.forEach(r => {
               userReviews.push({
                 ...r,
@@ -39,10 +35,10 @@ const MyReviews = () => {
           }
         });
 
-        setReviews(userReviews.reverse()); // Show newest first
+        setReviews(userReviews.reverse());
         setLoading(false);
       } catch (err) {
-        console.error(err);
+        console.warn('Failed to fetch reviews');
         setLoading(false);
       }
     };
@@ -53,7 +49,8 @@ const MyReviews = () => {
   const getImageUrl = (imagePath) => {
     if (!imagePath) return '';
     if (imagePath.startsWith('http')) return imagePath;
-    return `http://localhost:5000${imagePath}`;
+    const API_BASE_URL = 'https://rehoboth-backend.onrender.com';
+    return `${API_BASE_URL}${imagePath}`;
   };
 
   const styles = {
