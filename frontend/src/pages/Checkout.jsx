@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { orderAPI } from '../services/apiService';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -35,16 +35,11 @@ const Checkout = () => {
     };
 
     try {
-      // Send to internal database
-      await axios.post('/api/orders', orderData);
-      
-      // Clear cart
+      await orderAPI.create(orderData);
       localStorage.removeItem('cart');
-      
-      // Go to Thank You Page
       navigate('/success');
     } catch (err) {
-      console.error(err);
+      console.warn('Order failed');
       alert('Something went wrong. Please try again.');
     } finally {
       setLoading(false);
@@ -56,7 +51,7 @@ const Checkout = () => {
   return (
     <div style={{ padding: '20px', paddingBottom: '80px', minHeight: '100vh', background: '#f5f5f5' }}>
       <button onClick={() => navigate(-1)} style={{ background: 'transparent', border: 'none', fontSize: '24px', marginBottom: '10px' }}>←</button>
-      
+
       <h2 style={{ color: '#275228', marginBottom: '5px' }}>Checkout</h2>
       <p style={{ color: '#666', marginBottom: '20px' }}>Complete your order</p>
 
@@ -64,7 +59,7 @@ const Checkout = () => {
         <div style={{ marginBottom: '20px', paddingBottom: '20px', borderBottom: '1px solid #eee' }}>
           <strong>Order Summary</strong> <br/>
           {cart.map((item, index) => (
-             <div key={index} style={{ fontSize: '14px', color: '#555', marginTop: '5px' }}>• {item.name}</div>
+            <div key={index} style={{ fontSize: '14px', color: '#555', marginTop: '5px' }}>• {item.name}</div>
           ))}
           <div style={{ marginTop: '15px', fontSize: '18px', fontWeight: 'bold' }}>
             Total: <span style={{ color: '#275228' }}>₵{total.toFixed(2)}</span>
