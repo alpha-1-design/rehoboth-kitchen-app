@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { videoAPI } from '../services/apiService';
 
 const AddVideo = () => {
   const navigate = useNavigate();
@@ -18,13 +18,16 @@ const AddVideo = () => {
     formData.append('video', file);
 
     try {
-      await axios.post('http://localhost:5000/api/videos', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      await videoAPI.create(formData);
       alert('Video Uploaded to TV!');
       navigate('/videos');
-    } catch (err) { alert('Upload failed'); }
-    finally { setLoading(false); }
+    } catch (err) {
+      console.warn('Upload failed');
+      alert('Upload failed');
+    }
+    finally {
+      setLoading(false);
+    }
   };
 
   const styles = {
@@ -40,7 +43,7 @@ const AddVideo = () => {
         <input placeholder="Video Title (e.g. How to use Blender)" value={title} onChange={e => setTitle(e.target.value)} style={styles.input} />
         <label>Select Video (Max 30s recommended)</label>
         <input type="file" accept="video/*" onChange={e => setFile(e.target.files[0])} style={{marginBottom:'20px'}} />
-        
+
         <button type="submit" style={styles.btn} disabled={loading}>
           {loading ? 'Uploading... (Wait)' : 'Post Video'}
         </button>
@@ -48,4 +51,5 @@ const AddVideo = () => {
     </div>
   );
 };
+
 export default AddVideo;
