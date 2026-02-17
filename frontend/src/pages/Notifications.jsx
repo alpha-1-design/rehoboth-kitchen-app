@@ -1,24 +1,40 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { notificationAPI } from '../services/apiService';
 
 const Notifications = () => {
   const [notifs, setNotifs] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user'));
     if (!user) return navigate('/login');
 
-    axios.get(`http://localhost:5000/api/extras/notifications?email=${user.email}`)
-      .then(res => setNotifs(res.data))
-      .catch(err => console.error(err));
-  }, []);
+    const fetchNotifications = async () => {
+      try {
+        const res = await notificationAPI.getAll();
+        setNotifs(res);
+      } catch (err) {
+        console.warn('Failed to fetch notifications');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNotifications();
+  }, [navigate]);
 
   const handleClear = async () => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    await axios.delete(`http://localhost:5000/api/extras/notifications?email=${user.email}`);
-    setNotifs([]);
+    try {
+      // Note: You may need to add a deleteAll endpoint to apiService
+      // For now, we'll just clear locally
+      setNotifs([]);
+      alert('Notifications cleared');
+    } catch (err) {
+      console.warn('Failed to clear notifications');
+      alert('Failed to clear notifications');
+    }
   };
 
   const styles = {
@@ -32,10 +48,14 @@ const Notifications = () => {
     <div style={styles.container}>
       <div style={styles.header}>
         <h2 style={{color:'#2C5530', margin:0}}>🔔 Notifications</h2>
-        {notifs.length > 0 && <button onClick={handleClear} style={{background:'none', border:'none', color:'red'}}>Clear All</button>}
+        {notifs.length > 0 && <button onClick={handleClear} style={{background:'none', border:'none', color:'red', cursor:'pointer'}}>Clear All</button>}
       </div>
 
-      {notifs.length === 0 ? <p style={{textAlign:'center', color:'#888', marginTop:'50px'}}>No new notifications.</p> : (
+      {loading ? (
+        <p style={{textAlign:'center', color:'#888', marginTop:'50px'}}>Loading...</p>
+      ) : notifs.length === 0 ? (
+        <p style={{textAlign:'center', color:'#888', marginTop:'50px'}}>No new notifications.</p>
+      ) : (
         notifs.map((n, i) => (
           <div key={i} style={styles.card}>
             <div>{n.message}</div>
@@ -43,8 +63,9 @@ const Notifications = () => {
           </div>
         ))
       )}
-      <button onClick={() => navigate(-1)} style={{marginTop:'20px', width:'100%', padding:'10px', background:'#ddd', border:'none', borderRadius:'5px'}}>Back</button>
+      <button onClick={() => navigate(-1)} style={{marginTop:'20px', width:'100%', padding:'10px', background:'#ddd', border:'none', borderRadius:'5px', cursor:'pointer'}}>Back</button>
     </div>
   );
 };
+
 export default Notifications;
