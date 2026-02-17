@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-const Toast = ({ message, onClose }) => {
+const Toast = ({ message, type = 'success', onClose }) => {
   useEffect(() => {
     // Auto hide after 3 seconds
     const timer = setTimeout(() => {
@@ -8,6 +8,15 @@ const Toast = ({ message, onClose }) => {
     }, 3000);
     return () => clearTimeout(timer);
   }, [onClose]);
+
+  const typeStyles = {
+    success: { icon: '✔', color: '#2ecc71' },
+    error: { icon: '✕', color: '#e74c3c' },
+    warning: { icon: '⚠', color: '#f39c12' },
+    info: { icon: 'ℹ', color: '#3498db' }
+  };
+
+  const { icon, color } = typeStyles[type] || typeStyles.success;
 
   const styles = {
     toast: {
@@ -28,12 +37,12 @@ const Toast = ({ message, onClose }) => {
       gap: '10px',
       animation: 'slideDown 0.3s ease-out'
     },
-    icon: { color: '#2ecc71' } // Green check
+    icon: { color }
   };
 
   return (
     <div style={styles.toast}>
-      <span style={styles.icon}>✔</span> {message}
+      <span style={styles.icon}>{icon}</span> {message}
       <style>{`
         @keyframes slideDown {
           from { top: -50px; opacity: 0; }
