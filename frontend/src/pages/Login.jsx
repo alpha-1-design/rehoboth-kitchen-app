@@ -1,15 +1,12 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { validateGhanaPhone, validateEmail } from '../utils/validators'; // Import Validator
+import { validateGhanaPhone, validateEmail } from '../utils/validators';
+import { authAPI } from '../services/apiService';
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', password: '', confirmPassword: '' });
-  
-  // Error States
   const [errors, setErrors] = useState({ email: '', phone: '', password: '' });
-
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
   const OWNER_EMAIL = 'gracee14gn@gmail.com';
   const navigate = useNavigate();
@@ -23,7 +20,6 @@ const Login = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
 
-    // REAL-TIME VALIDATION
     if (name === 'phone') {
       const check = validateGhanaPhone(value);
       setErrors(prev => ({ ...prev, phone: check.isValid ? '' : check.message }));
@@ -42,25 +38,26 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Final Validation Check before sending
     if (!isLogin && errors.phone) return alert(errors.phone);
     if (errors.email) return alert(errors.email);
-
     if (!isLogin && formData.password !== formData.confirmPassword) return alert("Passwords do not match!");
     if (!isLogin && !isStrongPassword(formData.password)) return alert("Weak Password! Use 8+ chars, Uppercase, Number & Symbol.");
 
-    const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
     try {
-      const res = await axios.post(endpoint, formData);
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('user', JSON.stringify(res.data.user));
-      alert(`Welcome, ${res.data.user.name}!`);
-      if (res.data.user.email === OWNER_EMAIL) navigate('/dashboard'); 
+      const res = isLogin 
+        ? await authAPI.login({ email: formData.email, password: formData.password })
+        : await authAPI.signup(formData);
+      
+      localStorage.setItem('token', res.token);
+      localStorage.setItem('user', JSON.stringify(res.user));
+      alert(`Welcome, ${res.user.name}!`);
+      if (res.user.email === OWNER_EMAIL) navigate('/dashboard'); 
       else navigate('/'); 
-    } catch (err) { alert(err.response?.data?.message || 'Action Failed'); }
+    } catch (err) { 
+      alert(err.message || 'Action Failed'); 
+    }
   };
 
-  // Sliding Images
   const slideImages = [
     "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=600",
     "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=600",
@@ -91,7 +88,7 @@ const Login = () => {
         </div>
       </div>
       <div style={styles.overlay}></div>
-      
+
       <div style={{position:'absolute', top:0, width:'100%', padding:'15px', display:'flex', justifyContent:'space-between', zIndex:20, fontWeight:'bold'}}>
         <span>{currentTime}</span><span>Rehoboth Kitchen</span>
       </div>
@@ -99,12 +96,11 @@ const Login = () => {
       <div style={styles.card}>
         <h1 style={{color: '#2C5530', margin:0}}>Rehoboth Kitchen</h1>
         <p style={{color: '#A08C5B', fontStyle: 'italic', marginBottom: '20px'}}>Culinary Excellence</p>
-        
+
         <form onSubmit={handleSubmit}>
           {!isLogin && (
             <>
               <input name="name" placeholder="Full Name" onChange={handleChange} style={styles.input} required />
-              
               <input name="phone" type="tel" placeholder="Phone (e.g. 024...)" onChange={handleChange} style={styles.input} required />
               {errors.phone && <div style={styles.error}>{errors.phone}</div>}
             </>
@@ -130,14 +126,14 @@ const Login = () => {
             required 
             autoComplete={isLogin ? "current-password" : "new-password"} 
           />
-          
+
           {!isLogin && <input type="password" name="confirmPassword" placeholder="Confirm Password" onChange={handleChange} style={styles.input} required />}
-          
+
           <button type="submit" style={styles.btn}>{isLogin ? 'Log In' : 'Sign Up'}</button>
         </form>
 
         <p style={{marginTop: '20px', fontSize: '14px'}}>{isLogin ? "New here? " : "Have an account? "}<span onClick={() => setIsLogin(!isLogin)} style={styles.link}>{isLogin ? "Create Account" : "Sign In"}</span></p>
-        
+
         {isLogin && <button onClick={() => alert('Password reset link sent (Simulation)')} style={{background:'none', border:'none', color:'#888', marginTop:'10px'}}>Forgot Password?</button>}
       </div>
     </div>
