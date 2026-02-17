@@ -1,35 +1,41 @@
 import { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { productAPI } from '../services/apiService';
 
 const AddProduct = () => {
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
-  const [watts, setWatts] = useState(''); 
-  const [recipes, setRecipes] = useState(''); // NEW
+  const [watts, setWatts] = useState('');
+  const [recipes, setRecipes] = useState('');
   const [category, setCategory] = useState('Kitchen Appliances');
   const [description, setDescription] = useState('');
   const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    
     const formData = new FormData();
     formData.append('name', name);
     formData.append('price', price);
     formData.append('watts', watts);
-    formData.append('recipes', recipes); // Send recipes
+    formData.append('recipes', recipes);
     formData.append('category', category);
     formData.append('description', description);
     if (file) formData.append('image', file);
 
     try {
-      await axios.post('http://localhost:5000/api/products', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      await productAPI.create(formData);
       alert('Product Added!');
-      navigate('/'); 
-    } catch (err) { alert('Failed'); }
+      navigate('/');
+    } catch (err) {
+      console.warn('Failed to add product');
+      alert('Failed to add product');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const styles = {
@@ -67,9 +73,12 @@ const AddProduct = () => {
         <label>Description</label>
         <textarea value={description} onChange={e => setDescription(e.target.value)} style={{...styles.input, height:'100px'}} />
 
-        <button type="submit" style={styles.btn}>Add Product</button>
+        <button type="submit" style={styles.btn} disabled={loading}>
+          {loading ? 'Adding...' : 'Add Product'}
+        </button>
       </form>
     </div>
   );
 };
+
 export default AddProduct;
