@@ -22,7 +22,6 @@ const apiCall = async (endpoint, options = {}) => {
 
     return await response.json();
   } catch (error) {
-    // Only log warnings for network errors, not user errors
     if (error instanceof TypeError) {
       console.warn(`Network error: ${endpoint}`);
     }
@@ -52,6 +51,7 @@ export const orderAPI = {
   create: (data) => apiCall('/api/orders', { method: 'POST', body: JSON.stringify(data) }),
   getAll: () => apiCall('/api/orders'),
   getById: (id) => apiCall(`/api/orders/${id}`),
+  update: (id, data) => apiCall(`/api/orders/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
 };
 
 // Banner endpoints
@@ -70,14 +70,17 @@ export const videoAPI = {
 
 // Notification endpoints
 export const notificationAPI = {
-  getAll: () => apiCall('/api/notifications'),
-  markAsRead: (id) => apiCall(`/api/notifications/${id}`, { method: 'PUT' }),
+  getAll: () => apiCall('/api/extras/notifications'),
+  markAsRead: (id) => apiCall(`/api/extras/notifications/${id}`, { method: 'PUT' }),
+  deleteAll: () => apiCall('/api/extras/notifications', { method: 'DELETE' }),
+  delete: (id) => apiCall(`/api/extras/notifications/${id}`, { method: 'DELETE' }),
 };
 
 // Support endpoints
 export const supportAPI = {
   sendMessage: (data) => apiCall('/api/support', { method: 'POST', body: JSON.stringify(data) }),
   getMessages: () => apiCall('/api/support'),
+  deleteMessage: (id) => apiCall(`/api/support/${id}`, { method: 'DELETE' }),
 };
 
 // Suggestion endpoints
