@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { supportAPI } from '../services/apiService';
 
 const SupportChat = () => {
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
-  const [history, setHistory] = useState([]); 
+  const [history, setHistory] = useState([]);
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
   const bottomRef = useRef(null);
 
   useEffect(() => {
@@ -16,39 +17,46 @@ const SupportChat = () => {
     } else {
       const parsedUser = JSON.parse(storedUser);
       setUser(parsedUser);
-      fetchHistory(parsedUser.email);
+      fetchHistory();
     }
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     if (!user) return;
     const interval = setInterval(() => {
-      fetchHistory(user.email);
+      fetchHistory();
     }, 5000);
     return () => clearInterval(interval);
   }, [user]);
 
-  const fetchHistory = async (email) => {
+  const fetchHistory = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/support/history?email=${email}`);
-      setHistory(res.data);
-    } catch (err) { console.error(err); }
+      const res = await supportAPI.getMessages();
+      setHistory(res);
+    } catch (err) {
+      console.warn('Failed to fetch support history');
+    }
   };
 
   const handleSend = async (e) => {
     e.preventDefault();
     if (!message.trim()) return;
 
+    setLoading(true);
+
     try {
-      await axios.post('http://localhost:5000/api/support', {
+      await supportAPI.sendMessage({
         name: user.name,
         email: user.email,
         message: message
       });
       setMessage('');
-      fetchHistory(user.email);
+      await fetchHistory();
     } catch (err) {
-      alert('Failed to send');
+      console.warn('Failed to send message');
+      alert('Failed to send message');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -71,15 +79,13 @@ const SupportChat = () => {
   return (
     <div style={styles.container}>
       <div style={styles.header}>🎧 Support Chat</div>
-      
+
       <div style={styles.chatBox}>
-        {/* WELCOME MESSAGE */}
         <div style={styles.bubbleAdmin}>
           <strong>Support Team:</strong><br/>
           Hi {user?.name}, how can we help you today?
         </div>
 
-        {/* Chat History */}
         {history.map((h, i) => (
           <div key={i} style={{display:'flex', flexDirection:'column'}}>
             <div style={styles.bubbleMe}>
@@ -103,9 +109,12 @@ const SupportChat = () => {
           value={message} 
           onChange={(e) => setMessage(e.target.value)} 
           placeholder="Type your message..." 
-          style={styles.input} 
+          style={styles.input}
+          disabled={loading}
         />
-        <button type="submit" style={styles.btn}>➤</button>
+        <button type="submit" style={styles.btn} disabled={loading}>
+          {loading ? '...' : '➤'}
+        </button>
       </form>
     </div>
   );
