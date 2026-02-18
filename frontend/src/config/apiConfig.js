@@ -6,7 +6,7 @@ export const API_ENDPOINTS = {
   PRODUCTS: `${API_BASE_URL}/api/products`,
   ORDERS: `${API_BASE_URL}/api/orders`,
   BANNERS: `${API_BASE_URL}/api/banners`,
-  NOTIFICATIONS: `${API_BASE_URL}/api/notifications`,
+  NOTIFICATIONS: `${API_BASE_URL}/api/extras/notifications`,
   PUSH: `${API_BASE_URL}/api/push`,
   SUPPORT: `${API_BASE_URL}/api/support`,
   VIDEOS: `${API_BASE_URL}/api/videos`,
