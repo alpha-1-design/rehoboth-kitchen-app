@@ -10,7 +10,7 @@ const BottomNav = () => {
 
   const isActive = (path) => location.pathname === path;
   const user = JSON.parse(localStorage.getItem('user'));
-  const isAdmin = user && user.isAdmin === true;
+  const isAdmin = user && user.email === 'gracee14gn@gmail.com';
 
   const handleAccountClick = () => {
     if (!user) navigate('/login');
