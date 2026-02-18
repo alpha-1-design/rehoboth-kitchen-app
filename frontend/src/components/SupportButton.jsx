@@ -4,13 +4,14 @@ import { useNavigate, useLocation } from 'react-router-dom';
 const SupportButton = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  
-  // 1. Get User
-  const user = JSON.parse(localStorage.getItem('user'));
 
-  // 2. Hide if Login Page OR if User is Admin
+  // Get User
+  const user = JSON.parse(localStorage.getItem('user'));
+  const isAdmin = user && user.email === 'gracee14gn@gmail.com';
+
+  // Hide if Login Page OR if User is Admin
   if (location.pathname === '/login') return null;
-  if (user && user.isAdmin === true) return null;
+  if (isAdmin) return null;
 
   const styles = {
     button: {
@@ -25,8 +26,8 @@ const SupportButton = () => {
       height: '55px',
       boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
       cursor: 'pointer',
-      display: 'flex', 
-      alignItems: 'center', 
+      display: 'flex',
+      alignItems: 'center',
       justifyContent: 'center',
       fontSize: '24px',
       zIndex: 1000,
@@ -34,7 +35,12 @@ const SupportButton = () => {
   };
 
   return (
-    <button style={styles.button} onClick={() => navigate('/support')} title="Contact Support">
+    <button 
+      style={styles.button} 
+      onClick={() => navigate('/support')} 
+      title="Contact Support"
+      aria-label="Support button"
+    >
       🎧
     </button>
   );
