@@ -1,6 +1,6 @@
 User-agent: *
 Allow: /
-Sitemap: REPLACE_WITH_YOUR_DOMAIN/sitemap.xml
+Sitemap: https://rehoboth-kitchen-app.vercel.app/sitemap.xml
 
 # Block admin areas
 Disallow: /dashboard
