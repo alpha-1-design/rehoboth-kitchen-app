@@ -52,7 +52,8 @@ export async function subscribeToPush(userId) {
     });
 
     // Send subscription to backend
-    const response = await fetch('/api/push/subscribe', {
+    const BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com';
+    const response = await fetch(BASE_URL + '/api/push/subscribe', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ subscription, userId })
