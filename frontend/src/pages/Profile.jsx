@@ -73,7 +73,7 @@ const Profile = () => {
     if (editFile) formData.append('avatar', editFile);
 
     try {
-      const res = await axios.put('http://localhost:5000/api/auth/profile', formData, {
+      const res = await axios.put(`${import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com'}/api/auth/profile`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       localStorage.setItem('user', JSON.stringify(res.data.user));
@@ -90,7 +90,7 @@ const Profile = () => {
   const getAvatarUrl = (path) => {
     if (preview) return preview;
     if (!path) return 'https://via.placeholder.com/150?text=User';
-    return `http://localhost:5000${path}`;
+    return `${import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com'}${path}`;
   };
 
   const styles = {

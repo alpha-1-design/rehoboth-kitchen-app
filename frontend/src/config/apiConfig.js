@@ -1,5 +1,5 @@
 // Production API Configuration
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://rehoboth-backend.onrender.com';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com';
 
 export const API_ENDPOINTS = {
   AUTH: `${API_BASE_URL}/api/auth`,
