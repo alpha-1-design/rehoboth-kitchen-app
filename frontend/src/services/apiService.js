@@ -81,8 +81,8 @@ export const supportAPI = {
   sendMessage: (data) => apiCall('/api/support', { method: 'POST', body: JSON.stringify(data) }),
   getMessages: () => apiCall('/api/support'),
   deleteMessage: (id) => apiCall(`/api/support/${id}`, { method: 'DELETE' }),
+  replyToMessage: (id, reply) => apiCall(`/api/support/${id}/reply`, { method: 'PUT', body: JSON.stringify({ reply }) }),
 };
-
 // Suggestion endpoints
 export const suggestionAPI = {
   create: (data) => apiCall('/api/suggestions', { method: 'POST', body: JSON.stringify(data) }),

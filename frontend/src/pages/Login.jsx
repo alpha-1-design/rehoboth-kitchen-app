@@ -7,6 +7,8 @@ const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', password: '', confirmPassword: '' });
   const [errors, setErrors] = useState({ email: '', phone: '', password: '' });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
   const OWNER_EMAIL = 'gracee14gn@gmail.com';
   const navigate = useNavigate();
@@ -127,7 +129,25 @@ const Login = () => {
             autoComplete={isLogin ? "current-password" : "new-password"} 
           />
 
-          {!isLogin && <input type="password" name="confirmPassword" placeholder="Confirm Password" onChange={handleChange} style={styles.input} required />}
+          {!isLogin && (
+          <div style={{position:'relative'}}>
+            <input
+              type={showConfirm ? 'text' : 'password'}
+              name="confirmPassword"
+              placeholder="Confirm Password"
+              onChange={handleChange}
+              style={{...styles.input, paddingRight:'45px'}}
+              required
+            />
+            <span onClick={() => setShowConfirm(!showConfirm)} style={{position:'absolute', right:'12px', top:'50%', transform:'translateY(-50%)', cursor:'pointer', color:'#888'}}>
+              {showConfirm ? (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              ) : (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              )}
+            </span>
+          </div>
+        )}
 
           <button type="submit" style={styles.btn}>{isLogin ? 'Log In' : 'Sign Up'}</button>
         </form>

@@ -1,3 +1,4 @@
+import versionData from '../../version.json';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -66,8 +67,12 @@ const About = () => {
       </div>
       
       <p style={{textAlign:'center', color:'#aaa', fontSize:'12px', marginTop:'20px'}}>
-        &copy; {new Date().getFullYear()} Rehoboth Kitchen Ventures.
-      </p>
+  &copy; {new Date().getFullYear()} Rehoboth Kitchen Ventures.
+</p>
+<p style={{textAlign:'center', fontSize:'12px', color:'#aaa'}}>Version {versionData.version}</p>
+<p style={{textAlign:'center', marginTop:'10px'}}>
+  <span onClick={() => navigate('/privacy')} style={{color:'#2C5530', fontSize:'13px', cursor:'pointer', textDecoration:'underline'}}>Privacy Policy</span>
+</p>
     </div>
   );
 };

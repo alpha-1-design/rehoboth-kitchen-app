@@ -185,7 +185,11 @@ const Profile = () => {
             </>
           )}
           <div style={styles.listItem} onClick={() => navigate('/notification-settings')}><span style={styles.listText}>🔔 Push Notifications</span><span style={styles.listVal}>›</span></div>
-          <div style={styles.listItem} onClick={() => navigate('/about')}><span style={styles.listText}>About Rehoboth</span><span style={styles.listVal}>›</span></div>
+          <div style={styles.listItem} onClick={() => navigate('/privacy')}>
+              <span style={styles.listText}>🔒 Privacy Policy</span>
+              <span style={styles.listVal}>›</span>
+            </div>
+            <div style={styles.listItem} onClick={() => navigate('/about')}><span style={styles.listText}>About Rehoboth</span><span style={styles.listVal}>›</span></div>
           <div style={styles.listItem} onClick={handleShare}><span style={styles.listText}>Share App</span><span style={styles.listVal}><Icon name="arrowRight" size={16} /></span></div>
           {isAdmin && <div style={{...styles.listItem, background:'rgba(44,85,48,0.1)'}} onClick={() => navigate('/dashboard')}><span style={{...styles.listText, color:'#2C5530', fontWeight:'bold'}}>Admin Dashboard</span><span style={styles.listVal}>›</span></div>}
           <div style={{...styles.listItem, borderBottom:'none'}} onClick={handleLogout}><span style={{...styles.listText, color:'red', display:'flex', gap:'10px', alignItems:'center'}}><Icon name="logout" size={18} color="red" /> Sign out</span></div>

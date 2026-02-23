@@ -45,7 +45,7 @@ const Dashboard = () => {
     const reply = prompt("Enter your reply:");
     if (reply) {
       try {
-        await supportAPI.sendMessage({ id, reply });
+        await supportAPI.replyToMessage(id, reply);
         alert("Reply sent!");
         fetchData();
       } catch (err) {
