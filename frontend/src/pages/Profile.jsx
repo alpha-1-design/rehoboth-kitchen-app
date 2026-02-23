@@ -11,6 +11,10 @@ const Profile = () => {
 
   // Edit States
   const [isEditing, setIsEditing] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [editName, setEditName] = useState('');
   const [editPhone, setEditPhone] = useState('');
   const [editGhanaPost, setEditGhanaPost] = useState('');
@@ -50,6 +54,31 @@ const Profile = () => {
       navigator.share({ title: 'Rehoboth Kitchen', text: 'Best appliances!', url: window.location.origin });
     } else {
       alert("Link copied: " + window.location.origin);
+    }
+  };
+
+  const handleChangePassword = async () => {
+    if (newPassword !== confirmNewPassword) return alert('New passwords do not match!');
+    if (newPassword.length < 8) return alert('Password must be at least 8 characters!');
+    try {
+      const BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com';
+      const res = await fetch(BASE_URL + '/api/auth/change-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user._id, currentPassword, newPassword })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert(data.message);
+        setIsChangingPassword(false);
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmNewPassword('');
+      } else {
+        alert(data.message);
+      }
+    } catch (err) {
+      alert('Failed to change password');
     }
   };
 
@@ -153,6 +182,18 @@ const Profile = () => {
             </>
           )}
           <button onClick={handleSave} style={styles.saveBtn}>Save Details</button>
+          <button onClick={() => setIsChangingPassword(!isChangingPassword)} style={{...styles.saveBtn, background:'#555', marginTop:'10px'}}>🔑 Change Password</button>
+          {isChangingPassword && (
+            <div style={{marginTop:'15px'}}>
+              <label style={styles.label}>Current Password</label>
+              <input type="password" value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} style={styles.input} placeholder="Current password" />
+              <label style={styles.label}>New Password</label>
+              <input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} style={styles.input} placeholder="New password" />
+              <label style={styles.label}>Confirm New Password</label>
+              <input type="password" value={confirmNewPassword} onChange={e => setConfirmNewPassword(e.target.value)} style={styles.input} placeholder="Confirm new password" />
+              <button onClick={handleChangePassword} style={{...styles.saveBtn, background:'#2C5530'}}>Update Password</button>
+            </div>
+          )}
           <button onClick={() => setIsEditing(false)} style={{...styles.saveBtn, background:'#ddd', color:'#333'}}>Cancel</button>
         </div>
       )}
