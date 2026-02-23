@@ -18,6 +18,7 @@ import NotificationSettings from './pages/NotificationSettings';
 import BottomNav from './components/BottomNav';
 import SupportButton from './components/SupportButton';
 import ProtectedRoute from './components/ProtectedRoute';
+import Privacy from './pages/Privacy';
 import SplashScreen from './components/SplashScreen';
 
 // VIDEO FEED IMPORTS
@@ -66,6 +67,7 @@ function App() {
           <Route path='/notifications' element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
           <Route path='/suggestions' element={<ProtectedRoute><Suggestions /></ProtectedRoute>} />
 
+          <Route path='/privacy' element={<Privacy />} />
           <Route path='*' element={<Login />} />
         </Routes>
         <BottomNav />
