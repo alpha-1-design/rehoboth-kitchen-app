@@ -31,7 +31,7 @@ const apiCall = async (endpoint, options = {}) => {
 
 // Auth endpoints
 export const authAPI = {
-  signup: (data) => apiCall('/api/auth/signup', { method: 'POST', body: JSON.stringify(data) }),
+  signup: (data) => apiCall('/api/auth/register', { method: 'POST', body: JSON.stringify(data) }),
   login: (data) => apiCall('/api/auth/login', { method: 'POST', body: JSON.stringify(data) }),
   logout: () => apiCall('/api/auth/logout', { method: 'POST' }),
   getProfile: () => apiCall('/api/auth/profile'),
