@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { productAPI, bannerAPI } from '../services/apiService';
+import { productAPI, bannerAPI, notificationAPI } from '../services/apiService';
 import Icon from '../components/Icons'; 
 import Toast from '../components/Toast'; 
 
@@ -31,9 +31,9 @@ const Home = () => {
 
         const user = JSON.parse(localStorage.getItem('user'));
         if (user) {
-          // Note: You may need to add this endpoint to apiService if it doesn't exist
-          // For now, we'll skip the notifications count
-          setUnreadCount(0);
+          const notifs = await notificationAPI.getAll();
+          const unread = notifs.filter(n => !n.read && n.userId === user.email).length;
+          setUnreadCount(unread);
         }
       } catch (err) {
         console.warn('Failed to fetch home data');
