@@ -16,6 +16,11 @@ const Dashboard = () => {
     if (!storedUser) navigate('/');
     else setUser(JSON.parse(storedUser));
     fetchData();
+
+  useEffect(() => {
+    const interval = setInterval(fetchData, 10000);
+    return () => clearInterval(interval);
+  }, []);
   }, [navigate]);
 
   const fetchData = async () => {
