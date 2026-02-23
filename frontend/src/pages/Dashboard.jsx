@@ -18,10 +18,6 @@ const Dashboard = () => {
     fetchData();
   }, [navigate]);
 
-  useEffect(() => {
-    const interval = setInterval(fetchData, 10000);
-    return () => clearInterval(interval);
-  }, []);
 
   const fetchData = async () => {
     try {
