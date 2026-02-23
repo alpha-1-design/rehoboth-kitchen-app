@@ -154,7 +154,22 @@ const Login = () => {
 
         <p style={{marginTop: '20px', fontSize: '14px'}}>{isLogin ? "New here? " : "Have an account? "}<span onClick={() => setIsLogin(!isLogin)} style={styles.link}>{isLogin ? "Create Account" : "Sign In"}</span></p>
 
-        {isLogin && <button onClick={() => alert('Password reset link sent (Simulation)')} style={{background:'none', border:'none', color:'#888', marginTop:'10px'}}>Forgot Password?</button>}
+        {isLogin && <button onClick={async () => {
+            const email = prompt('Enter your email address:');
+            if (!email) return;
+            try {
+              const BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com';
+              const res = await fetch(BASE_URL + '/api/auth/forgot-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+              });
+              const data = await res.json();
+              alert(data.message);
+            } catch(e) {
+              alert('Failed. Try again.');
+            }
+          }} style={{background:'none', border:'none', color:'#888', marginTop:'10px'}}>Forgot Password?</button>}
       </div>
     </div>
   );
