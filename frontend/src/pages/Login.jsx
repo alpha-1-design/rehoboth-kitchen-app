@@ -43,7 +43,7 @@ const Login = () => {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const idToken = await result.user.getIdToken();
-      const BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com'\;
+      const BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com';
       const res = await fetch(BASE_URL + '/api/auth/google', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
