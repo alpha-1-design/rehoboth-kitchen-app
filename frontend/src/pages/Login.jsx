@@ -50,6 +50,7 @@ const Login = () => {
         body: JSON.stringify({ idToken })
       });
       const data = await res.json();
+      alert('Backend response: ' + JSON.stringify(data));
       if (res.ok) {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
