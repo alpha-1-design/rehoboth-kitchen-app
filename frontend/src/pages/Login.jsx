@@ -33,7 +33,7 @@ const Login = () => {
   };
 
   const isStrongPassword = (password) => {
-    const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/;
+    const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/;
     return strongRegex.test(password);
   };
 
@@ -43,7 +43,7 @@ const Login = () => {
     if (!isLogin && errors.phone) return alert(errors.phone);
     if (errors.email) return alert(errors.email);
     if (!isLogin && formData.password !== formData.confirmPassword) return alert("Passwords do not match!");
-    if (!isLogin && !isStrongPassword(formData.password)) return alert("Weak Password! Use 8+ chars, Uppercase, Number & Symbol.");
+    if (!isLogin && !isStrongPassword(formData.password)) return alert("Weak Password! Must be 8+ characters with uppercase and a number.");
 
     try {
       const res = isLogin 
