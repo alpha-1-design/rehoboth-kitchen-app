@@ -96,7 +96,7 @@ const Login = () => {
       }
     } catch (err) {
       console.error(err);
-      alert('Google login failed. Try again.');
+      alert('Error: ' + err.code + ' - ' + err.message);
     }
   };
 
