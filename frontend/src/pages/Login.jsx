@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { auth, googleProvider } from '../config/firebase';
-import { signInWithPopup } from 'firebase/auth';
+import { signInWithPopup, signInWithRedirect, getRedirectResult } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { validateGhanaPhone, validateEmail } from '../utils/validators';
 import { authAPI } from '../services/apiService';
@@ -14,6 +14,36 @@ const Login = () => {
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
   const OWNER_EMAIL = 'gracee14gn@gmail.com';
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Handle Google redirect result
+    const handleRedirectResult = async () => {
+      try {
+        const result = await getRedirectResult(auth);
+        if (result) {
+          const idToken = await result.user.getIdToken();
+          const BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com';
+          const res = await fetch(BASE_URL + '/api/auth/google', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idToken })
+          });
+          const data = await res.json();
+          if (res.ok) {
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            if (data.user.email === OWNER_EMAIL) navigate('/dashboard');
+            else navigate('/');
+          } else {
+            alert(data.message || 'Google login failed');
+          }
+        }
+      } catch (err) {
+        console.error('Redirect error:', err);
+      }
+    };
+    handleRedirectResult();
+  }, [navigate]);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })), 1000);
@@ -41,6 +71,11 @@ const Login = () => {
 
   const handleGoogleLogin = async () => {
     try {
+      const isMobile = /android|iphone|ipad|ipod/i.test(navigator.userAgent);
+      if (isMobile) {
+        await signInWithRedirect(auth, googleProvider);
+        return;
+      }
       const result = await signInWithPopup(auth, googleProvider);
       const idToken = await result.user.getIdToken();
       const BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com';
@@ -50,7 +85,6 @@ const Login = () => {
         body: JSON.stringify({ idToken })
       });
       const data = await res.json();
-      alert('Backend response: ' + JSON.stringify(data));
       if (res.ok) {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
