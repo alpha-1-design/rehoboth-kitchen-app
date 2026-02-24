@@ -20,7 +20,6 @@ const Login = () => {
     const handleRedirectResult = async () => {
       try {
         const result = await getRedirectResult(auth);
-        alert('Redirect result: ' + (result ? result.user.email : 'null'));
         if (result) {
           const idToken = await result.user.getIdToken();
           const BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com';
@@ -72,11 +71,6 @@ const Login = () => {
 
   const handleGoogleLogin = async () => {
     try {
-      const isMobile = /android|iphone|ipad|ipod/i.test(navigator.userAgent);
-      if (isMobile) {
-        await signInWithRedirect(auth, googleProvider);
-        return;
-      }
       const result = await signInWithPopup(auth, googleProvider);
       const idToken = await result.user.getIdToken();
       const BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com';
