@@ -20,6 +20,7 @@ import SupportButton from './components/SupportButton';
 import ProtectedRoute from './components/ProtectedRoute';
 import Privacy from './pages/Privacy';
 import SplashScreen from './components/SplashScreen';
+import InstallBanner from './components/InstallBanner';
 
 // VIDEO FEED IMPORTS
 import VideoFeed from './pages/VideoFeed';
@@ -41,6 +42,7 @@ function App() {
   return (
     <Router>
       <ScrollToTop />
+      <InstallBanner />
       <div style={{ paddingBottom: '70px' }}>
         <Routes>
           <Route path='/login' element={<Login />} />
