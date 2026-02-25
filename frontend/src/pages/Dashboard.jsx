@@ -182,7 +182,21 @@ const Dashboard = () => {
 
       {activeTab === 'users' && (
         <div>
-          <h4 style={{marginBottom:'10px'}}>All Users ({users.length})</h4>
+          <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'10px'}}>
+            <h4 style={{margin:0}}>All Users ({users.length})</h4>
+            <button onClick={async () => {
+              const BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com';
+              const res = await fetch(BASE_URL + '/api/auth/fix-referrals', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+              });
+              const data = await res.json();
+              alert(data.message);
+              fetchData();
+            }} style={{background:'#2C5530', color:'white', border:'none', padding:'8px 12px', borderRadius:'8px', fontSize:'12px'}}>
+              Fix Referral Codes
+            </button>
+          </div>
           {users.map((u) => (
             <div key={u._id} style={styles.card}>
               <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
