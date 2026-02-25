@@ -185,6 +185,7 @@ const Dashboard = () => {
           <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'10px'}}>
             <h4 style={{margin:0}}>All Users ({users.length})</h4>
             <button onClick={async () => {
+              try {
               const BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com';
               const res = await fetch(BASE_URL + '/api/auth/fix-referrals', {
                 method: 'POST',
@@ -193,6 +194,7 @@ const Dashboard = () => {
               const data = await res.json();
               alert(data.message);
               fetchData();
+              } catch(err) { alert('Error: ' + err.message); }
             }} style={{background:'#2C5530', color:'white', border:'none', padding:'8px 12px', borderRadius:'8px', fontSize:'12px'}}>
               Fix Referral Codes
             </button>
