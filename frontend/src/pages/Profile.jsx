@@ -198,6 +198,20 @@ const Profile = () => {
         </div>
       )}
 
+      {!isEditing && user?.referralCode && (
+        <div style={{padding:'15px 20px', background:'#f0f8f0', margin:'10px 20px', borderRadius:'10px'}}>
+          <p style={{margin:'0 0 5px 0', fontWeight:'bold', color:'#2C5530'}}>🔗 Your Referral Code</p>
+          <div style={{display:'flex', alignItems:'center', gap:'10px'}}>
+            <span style={{fontSize:'20px', fontWeight:'bold', letterSpacing:'2px', color:'#2C5530'}}>{user.referralCode}</span>
+            <button onClick={() => {
+              navigator.clipboard.writeText(`Sign up on Rehoboth Kitchen using my referral code: ${user.referralCode} at https://rehoboth-kitchen-app.vercel.app`);
+              alert('Referral link copied!');
+            }} style={{background:'#2C5530', color:'white', border:'none', padding:'5px 12px', borderRadius:'8px', fontSize:'12px'}}>Copy</button>
+          </div>
+          <p style={{margin:'5px 0 0 0', fontSize:'12px', color:'#888'}}>You have referred {user.referralCount || 0} people</p>
+        </div>
+      )}
+
       {!isEditing && (
         <div className="glass-panel" style={{margin: '20px 20px'}}>
           <div style={styles.gridContainer}>
