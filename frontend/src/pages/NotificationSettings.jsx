@@ -6,6 +6,8 @@ const NotificationSettings = () => {
   const [subscribed, setSubscribed] = useState(false);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem('user'));
+  const isAdmin = user?.isAdmin === true;
 
   useEffect(() => {
     checkSubscription();
@@ -105,10 +107,21 @@ const NotificationSettings = () => {
       <div style={styles.card}>
         <h3 style={{fontSize: '14px', marginTop: 0}}>ℹ️ What are Push Notifications?</h3>
         <p style={{fontSize: '13px', color: '#666', lineHeight: '1.6'}}>
-          • Get instant alerts when your order is confirmed<br/>
-          • Receive delivery updates even when app is closed<br/>
-          • Never miss replies from our support team<br/>
-          • Works even after you install the app on your home screen
+          {isAdmin ? (
+            <>
+              • Get instant alerts for new orders<br/>
+              • Get notified when customers send support messages<br/>
+              • Receive alerts for new product reviews<br/>
+              • Works even when the admin panel is closed
+            </>
+          ) : (
+            <>
+              • Get instant alerts when your order is confirmed<br/>
+              • Receive delivery updates even when app is closed<br/>
+              • Never miss replies from our support team<br/>
+              • Works even after you install the app on your home screen
+            </>
+          )}
         </p>
       </div>
 
