@@ -219,7 +219,7 @@ const Profile = () => {
               <>
                 <div style={styles.gridItem} onClick={() => navigate('/my-reviews')}><Icon name="star" color="#f39c12" /><span style={styles.gridText}>My Reviews</span></div>
                 <div style={styles.gridItem} onClick={() => navigate('/suggestions')}><Icon name="bulb" color="#2980b9" /><span style={styles.gridText}>Suggestions</span></div>
-                <div style={styles.gridItem} onClick={() => alert('Susu feature coming soon!')}><Icon name="dashboard" color="#27ae60" /><span style={styles.gridText}>My Susu</span></div>
+                <div style={styles.gridItem} onClick={() => navigate('/wishlist')}><Icon name="dashboard" color="#27ae60" /><span style={styles.gridText}>My Wishlist</span></div>
                 <div style={styles.gridItem} onClick={() => navigate('/support')}><Icon name="support" color="#e74c3c" /><span style={styles.gridText}>Support</span></div>
               </>
             ) : (
