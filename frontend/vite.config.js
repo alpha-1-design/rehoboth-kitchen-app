@@ -3,6 +3,9 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  build: {
+    minify: 'esbuild',
+  },
   plugins: [
     react(),
     VitePWA({
@@ -12,8 +15,10 @@ export default defineConfig({
       },
       strategies: 'generateSW',
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,mp4}'],
-        maximumFileSizeToCacheInBytes: 70 * 1024 * 1024
+        globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+        maximumFileSizeToCacheInBytes: 70 * 1024 * 1024,
+        swDest: 'dist/sw.js',
+        inlineWorkboxRuntime: true,
       },
       includeAssets: ['logo.png'],
       manifest: {
@@ -26,19 +31,10 @@ export default defineConfig({
         orientation: 'portrait',
         start_url: '/',
         icons: [
-          {
-            src: 'logo.png',
-            sizes: '192x192',
-            type: 'image/png'
-          },
-          {
-            src: 'logo.png',
-            sizes: '512x512',
-            type: 'image/png'
-          }
+          { src: 'logo.png', sizes: '192x192', type: 'image/png' },
+          { src: 'logo.png', sizes: '512x512', type: 'image/png' }
         ]
       }
     })
   ],
 })
-
