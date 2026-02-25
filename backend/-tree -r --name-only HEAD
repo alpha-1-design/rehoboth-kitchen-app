@@ -1,0 +1,95 @@
+[33mcommit 21f26522985fefae212cd2735a8cc5dd18ac329a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: alpha-1-design <alphariansamuel@gmail.com>
+Date:   Fri Jan 30 13:50:43 2026 +0000
+
+    Backend ready for Render
+
+[1mdiff --git a/.gitignore b/.gitignore[m
+[1mnew file mode 100644[m
+[1mindex 0000000..972cd7b[m
+[1m--- /dev/null[m
+[1m+++ b/.gitignore[m
+[36m@@ -0,0 +1,3 @@[m
+[32m+[m[32mnode_modules[m
+[32m+[m[32m.env[m
+[32m+[m[32muploads/[m
+[1mdiff --git a/authRoutes.js b/authRoutes.js[m
+[1mnew file mode 100644[m
+[1mindex 0000000..0cd894e[m
+[1m--- /dev/null[m
+[1m+++ b/authRoutes.js[m
+[36m@@ -0,0 +1,14 @@[m
+[32m+[m[32m// backend/routes/authRoutes.js[m
+[32m+[m[32mconst express = require('express');[m
+[32m+[m[32mconst router = express.Router();[m
+[32m+[m
+[32m+[m[32m// Import the controller functions[m
+[32m+[m[32m// Make sure your controller file is named 'authController.js' (no spaces!)[m
+[32m+[m[32mconst { login, register } = require('../controllers/authController');[m
+[32m+[m
+[32m+[m[32m// Define Routes[m
+[32m+[m[32mrouter.post('/register', register);[m
+[32m+[m[32mrouter.post('/login', login);[m
+[32m+[m
+[32m+[m[32m// --- THIS WAS MISSING OR WRONG ---[m
+[32m+[m[32mmodule.exports = router;[m
+\ No newline at end of file[m
+[1mdiff --git a/config.js b/config.js[m
+[1mnew file mode 100644[m
+[1mindex 0000000..a72e897[m
+[1m--- /dev/null[m
+[1m+++ b/config.js[m
+[36m@@ -0,0 +1,9 @@[m
+[32m+[m[32mmodule.exports = {[m
+[32m+[m[32m  ADMIN_EMAIL: process.env.ADMIN_EMAIL || 'gracee14gn@gmail.com',[m
+[32m+[m[32m  APP_NAME: 'Rehoboth Kitchen',[m
+[32m+[m[32m  CURRENCY: 'GHS',[m
+[32m+[m[32m  DEFAULT_REGION: 'Ashanti Region',[m
+[32m+[m[32m  DELIVERY_REGIONS: ['Ahafo', 'Ashanti', 'Bono', 'Greater Accra', 'Northern', 'Western'],[m
+[32m+[m[32m  MAX_ORDER_ITEMS: 50,[m
+[32m+[m[32m  MIN_ORDER_AMOUNT: 20[m
+[32m+[m[32m};[m
+[1mdiff --git a/controllers/authController.js b/controllers/authController.js[m
+[1mnew file mode 100644[m
+[1mindex 0000000..0db6e47[m
+[1m--- /dev/null[m
+[1m+++ b/controllers/authController.js[m
+[36m@@ -0,0 +1,108 @@[m
+[32m+[m[32mconst { usersDB } = require('../db');[m
+[32m+[m[32mconst db = usersDB;[m
+[32m+[m[32mconst bcrypt = require('bcryptjs');[m
+[32m+[m[32mconst jwt = require('jsonwebtoken');[m
+[32m+[m
+[32m+[m[32mconst generateToken = (id) => {[m
+[32m+[m[32m    return jwt.sign({ id }, process.env.JWT_SECRET || 'secret', { expiresIn: '30d' });[m
+[32m+[m[32m};[m
+[32m+[m
+[32m+[m[32mconst register = async (req, res) => {[m
+[32m+[m[32m    const { name, email, phone, password } = req.body;[m
+[32m+[m[32m    try {[m
+[32m+[m[32m        const userExists = await db.findOne({ email });[m
+[32m+[m[32m        if (userExists) return res.status(400).json({ message: 'User already exists' });[m
+[32m+[m
+[32m+[m[32m        const salt = await bcrypt.genSalt(10);[m
+[32m+[m[32m        const hashedPassword = await bcrypt.hash(password, salt);[m
+[32m+[m
+[32m+[m[32m        const newUser = {[m
+[32m+[m[32m            name,[m[41m [m
+[32m+[m[32m            email,[m[41m [m
+[32m+[m[32m            phone,[m[41m [m
+[32m+[m[32m            password: hashedPassword,[m[41m [m
+[32m+[m[32m            avatar: '',[m
+[32m+[m[32m            ghanaPost: '',[m[41m [m
+[32m+[m[32m            momoNumber: '',[m[41m [m
+[32m+[m[32m            region: 'Ashanti',[m
+[32m+[m[32m            isAdmin: false,[m
+[32m+[m[32m            createdAt: new Date()[m
+[32m+[m[32m        };[m
+[32m+[m[32m        const user = await db.insert(newUser);[m
+[32m+[m
+[32m+[m[32m        res.status(201).json({[m
+[32m+[m[32m            message: 'Registration Successful',[m
+[32m+[m[32m            token: generateToken(user._id),[m
+[32m+[m[32m            user: {[m[41m [m
+[32m+[m[32m                _id: user._id,[m[41m [m
+[32m+[m[32m                name: user.name,[m[41m [

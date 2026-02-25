@@ -1,0 +1,22 @@
+const { bannersDB } = require('../db');
+
+const getBanners = async (req, res) => {
+    const banners = await bannersDB.find({});
+    res.json(banners);
+};
+
+const addBanner = async (req, res) => {
+    const { title } = req.body;
+    const imagePath = req.file ? `/uploads/${req.file.filename}` : '';
+    if (!imagePath) return res.status(400).json({ message: 'Image required' });
+
+    const banner = await bannersDB.insert({ title, image: imagePath, createdAt: new Date() });
+    res.status(201).json(banner);
+};
+
+const deleteBanner = async (req, res) => {
+    await bannersDB.remove({ _id: req.params.id }, {});
+    res.json({ message: 'Banner removed' });
+};
+
+module.exports = { getBanners, addBanner, deleteBanner };
