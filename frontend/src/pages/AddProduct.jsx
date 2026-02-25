@@ -11,7 +11,6 @@ const AddProduct = () => {
   const [category, setCategory] = useState('Kitchen Appliances');
   const [description, setDescription] = useState('');
   const [file, setFile] = useState(null);
-  const [video, setVideo] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -26,7 +25,6 @@ const AddProduct = () => {
     formData.append('category', category);
     formData.append('description', description);
     if (file) formData.append('image', file);
-    if (video) formData.append('video', video);
 
     try {
       await productAPI.create(formData);
@@ -61,19 +59,22 @@ const AddProduct = () => {
           <option>Kitchen Appliances</option>
           <option>Home Appliances</option>
           <option>Electronics</option>
+          <option>Accessories</option>
+          <option>Clothing & Fashion</option>
+          <option>Personal Care</option>
+          <option>Others</option>
         </select>
 
         <label>Power (Watts) - Optional</label>
-        <input type="number" placeholder="Auto-calculated if empty" value={watts} onChange={e => setWatts(e.target.value)} style={styles.input} />
+        <input type="number" placeholder="e.g. 1500" value={watts} onChange={e => setWatts(e.target.value)} style={styles.input} />
 
-        <label>What can I cook? (Recipes) - Optional</label>
-        <input placeholder="e.g. Fufu, Jollof (Auto-filled if empty)" value={recipes} onChange={e => setRecipes(e.target.value)} style={styles.input} />
+        <label>Features / Uses - Optional</label>
+        <input placeholder="e.g. Blends fruits, Makes smoothies, Grinds pepper" value={recipes} onChange={e => setRecipes(e.target.value)} style={styles.input} />
 
         <label>Image</label>
         <input type="file" onChange={e => setFile(e.target.files[0])} style={{marginBottom:'20px'}} />
 
-        <label>Product Video - Optional</label>
-        <input type="file" accept="video/*" onChange={e => setVideo(e.target.files[0])} style={{marginBottom:'20px'}} />
+
 
         <label>Description</label>
         <textarea value={description} onChange={e => setDescription(e.target.value)} style={{...styles.input, height:'100px'}} />
