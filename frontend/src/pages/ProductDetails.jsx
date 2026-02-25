@@ -12,6 +12,25 @@ const ProductDetails = () => {
 
   // Review State
   const [rating, setRating] = useState(5);
+  const [inWishlist, setInWishlist] = useState(false);
+
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem('wishlist') || '[]');
+    setInWishlist(saved.some(item => item._id === id));
+  }, [id]);
+
+  const toggleWishlist = () => {
+    const saved = JSON.parse(localStorage.getItem('wishlist') || '[]');
+    if (inWishlist) {
+      const updated = saved.filter(item => item._id !== id);
+      localStorage.setItem('wishlist', JSON.stringify(updated));
+      setInWishlist(false);
+    } else {
+      saved.push(product);
+      localStorage.setItem('wishlist', JSON.stringify(saved));
+      setInWishlist(true);
+    }
+  };
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
   const [answeringIndex, setAnsweringIndex] = useState(null);

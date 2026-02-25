@@ -25,6 +25,7 @@ import InstallBanner from './components/InstallBanner';
 // VIDEO FEED IMPORTS
 import VideoFeed from './pages/VideoFeed';
 import AddVideo from './pages/AddVideo';
+import Wishlist from './pages/Wishlist';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -54,6 +55,7 @@ function App() {
           {/* VIDEO ROUTES */}
           <Route path='/videos' element={<ProtectedRoute><VideoFeed /></ProtectedRoute>} />
           <Route path='/add-video' element={<ProtectedRoute><AddVideo /></ProtectedRoute>} />
+        <Route path='/wishlist' element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
 
           {/* NOTIFICATION SETTINGS */}
           <Route path="/notification-settings" element={<NotificationSettings />} />
