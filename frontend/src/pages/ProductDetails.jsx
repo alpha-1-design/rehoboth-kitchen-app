@@ -12,6 +12,9 @@ const ProductDetails = () => {
 
   // Review State
   const [rating, setRating] = useState(5);
+  const [question, setQuestion] = useState('');
+  const [answer, setAnswer] = useState('');
+  const [answeringIndex, setAnsweringIndex] = useState(null);
   const [comment, setComment] = useState('');
   const [refresh, setRefresh] = useState(false);
 
@@ -42,6 +45,47 @@ const ProductDetails = () => {
 
   const addToGiftList = () => {
     alert("🎁 Added to your Gift Registry!\n\n(Share your 'Me' profile link with friends to let them buy this for you!)");
+  };
+
+  const submitQuestion = async (e) => {
+    e.preventDefault();
+    if (!user) return alert('Please login to ask a question');
+    if (!question.trim()) return alert('Please enter a question');
+    try {
+      const BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com';
+      const res = await fetch(BASE_URL + `/api/products/${id}/questions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+        body: JSON.stringify({ question, userName: user.name })
+      });
+      const data = await res.json();
+      alert(data.message);
+      setQuestion('');
+      const updated = await fetch(BASE_URL + `/api/products/${id}`);
+      setProduct(await updated.json());
+    } catch (err) {
+      alert('Failed to submit question');
+    }
+  };
+
+  const submitAnswer = async (index) => {
+    if (!answer.trim()) return alert('Please enter an answer');
+    try {
+      const BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com';
+      const res = await fetch(BASE_URL + `/api/products/${id}/questions`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+        body: JSON.stringify({ answer, questionIndex: index })
+      });
+      const data = await res.json();
+      alert(data.message);
+      setAnswer('');
+      setAnsweringIndex(null);
+      const updated = await fetch(BASE_URL + `/api/products/${id}`);
+      setProduct(await updated.json());
+    } catch (err) {
+      alert('Failed to submit answer');
+    }
   };
 
   const submitReview = async (e) => {
@@ -138,7 +182,46 @@ const ProductDetails = () => {
           <textarea placeholder="Share your experience..." value={comment} onChange={(e) => setComment(e.target.value)} style={{width:'100%', padding:'10px', marginTop:'10px', borderRadius:'5px', border:'1px solid #ddd'}} required />
           <button type="submit" style={{marginTop:'10px', padding:'10px', background:'#2C5530', color:'white', border:'none', borderRadius:'5px', cursor:'pointer'}}>Submit</button>
         </form>
-        {(!product.reviews || product.reviews.length === 0) ? (
+        {/* Q&A Section */}
+      <div style={{marginTop:'30px'}}>
+        <h3 style={{color:'#333'}}>❓ Questions & Answers ({(product.questions || []).length})</h3>
+        
+        <form onSubmit={submitQuestion} style={{marginBottom:'20px', background:'#f0f8f0', padding:'15px', borderRadius:'10px'}}>
+          <label style={{display:'block', marginBottom:'5px', fontWeight:'bold'}}>Ask a Question:</label>
+          <textarea value={question} onChange={e => setQuestion(e.target.value)} placeholder="e.g. Does it come with a warranty?" style={{width:'100%', padding:'10px', borderRadius:'8px', border:'1px solid #ddd', marginBottom:'10px', minHeight:'70px'}} />
+          <button type="submit" style={{background:'#2C5530', color:'white', border:'none', padding:'10px 20px', borderRadius:'8px', fontWeight:'bold'}}>Submit Question</button>
+        </form>
+
+        {(product.questions || []).length === 0 ? (
+          <p style={{color:'#888'}}>No questions yet. Be the first to ask!</p>
+        ) : (
+          (product.questions || []).slice().reverse().map((q, i) => (
+            <div key={i} style={{background:'white', padding:'15px', borderRadius:'10px', marginBottom:'10px', boxShadow:'0 2px 5px rgba(0,0,0,0.05)'}}>
+              <p style={{margin:'0 0 5px 0'}}><strong>Q:</strong> {q.question}</p>
+              <p style={{fontSize:'12px', color:'#888', margin:'0 0 10px 0'}}>Asked by {q.askedBy}</p>
+              {q.answer ? (
+                <p style={{background:'#e8f5e9', padding:'10px', borderRadius:'8px', margin:0}}><strong>A:</strong> {q.answer}</p>
+              ) : (
+                user?.isAdmin ? (
+                  answeringIndex === i ? (
+                    <div>
+                      <textarea value={answer} onChange={e => setAnswer(e.target.value)} placeholder="Type your answer..." style={{width:'100%', padding:'10px', borderRadius:'8px', border:'1px solid #ddd', marginBottom:'5px'}} />
+                      <button onClick={() => submitAnswer((product.questions.length - 1) - i)} style={{background:'#2C5530', color:'white', border:'none', padding:'8px 15px', borderRadius:'8px', marginRight:'5px'}}>Submit</button>
+                      <button onClick={() => setAnsweringIndex(null)} style={{background:'#ccc', border:'none', padding:'8px 15px', borderRadius:'8px'}}>Cancel</button>
+                    </div>
+                  ) : (
+                    <button onClick={() => setAnsweringIndex(i)} style={{background:'#2980b9', color:'white', border:'none', padding:'8px 15px', borderRadius:'8px'}}>Answer</button>
+                  )
+                ) : (
+                  <p style={{color:'#888', fontSize:'13px', fontStyle:'italic'}}>Awaiting answer from seller...</p>
+                )
+              )}
+            </div>
+          ))
+        )}
+      </div>
+
+      {(!product.reviews || product.reviews.length === 0) ? (
           <p style={{color: '#888'}}>No reviews yet.</p>
         ) : (
           product.reviews.slice().reverse().map((r, i) => (
