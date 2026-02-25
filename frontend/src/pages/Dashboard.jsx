@@ -132,7 +132,7 @@ const Dashboard = () => {
         <button onClick={() => setActiveTab('support')} style={styles.tab(activeTab === 'support')}>Support</button>
         <button onClick={async () => {
           setActiveTab('users');
-          const BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com'\;
+          const BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com';
           const res = await fetch(BASE_URL + '/api/auth/users', { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
           const data = await res.json();
           setUsers(Array.isArray(data) ? data : []);
