@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 const Wishlist = () => {
   const [wishlist, setWishlist] = useState([]);
   const navigate = useNavigate();
-  const BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com'\;
+  const BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com';
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem('wishlist') || '[]');
