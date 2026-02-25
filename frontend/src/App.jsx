@@ -33,6 +33,17 @@ const ScrollToTop = () => {
   return null;
 };
 
+function UpdatePrompt() {
+  const { needRefresh: [needRefresh], updateServiceWorker } = useRegisterSW();
+  if (!needRefresh) return null;
+  return (
+    <div style={{position:'fixed', bottom:'80px', left:'20px', right:'20px', background:'#2C5530', color:'white', padding:'15px', borderRadius:'12px', zIndex:9999, display:'flex', justifyContent:'space-between', alignItems:'center', boxShadow:'0 4px 15px rgba(0,0,0,0.2)'}}>
+      <span style={{fontSize:'14px'}}>🔄 New update available!</span>
+      <button onClick={() => updateServiceWorker(true)} style={{background:'white', color:'#2C5530', border:'none', padding:'6px 14px', borderRadius:'8px', fontWeight:'bold', cursor:'pointer'}}>Update</button>
+    </div>
+  );
+}
+
 function App() {
   const [showSplash, setShowSplash] = useState(true);
 
@@ -44,6 +55,7 @@ function App() {
     <Router>
       <ScrollToTop />
       <InstallBanner />
+      <UpdatePrompt />
       <div style={{ paddingBottom: '70px' }}>
         <Routes>
           <Route path='/login' element={<Login />} />
