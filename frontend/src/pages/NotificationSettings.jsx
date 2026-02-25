@@ -105,10 +105,10 @@ const NotificationSettings = () => {
       <div style={styles.card}>
         <h3 style={{fontSize: '14px', marginTop: 0}}>ℹ️ What are Push Notifications?</h3>
         <p style={{fontSize: '13px', color: '#666', lineHeight: '1.6'}}>
-          • Get instant alerts for new orders<br/>
-          • Receive updates even when app is closed<br/>
-          • Never miss important messages<br/>
-          • Works on your phone's home screen
+          • Get instant alerts when your order is confirmed<br/>
+          • Receive delivery updates even when app is closed<br/>
+          • Never miss replies from our support team<br/>
+          • Works even after you install the app on your home screen
         </p>
       </div>
 
