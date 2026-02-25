@@ -130,7 +130,13 @@ const Dashboard = () => {
         <button onClick={() => setActiveTab('orders')} style={styles.tab(activeTab === 'orders')}>Orders</button>
         <button onClick={() => setActiveTab('inventory')} style={styles.tab(activeTab === 'inventory')}>Inventory</button>
         <button onClick={() => setActiveTab('support')} style={styles.tab(activeTab === 'support')}>Support</button>
-        <button onClick={() => setActiveTab('users')} style={styles.tab(activeTab === 'users')}>Users</button>
+        <button onClick={async () => {
+          setActiveTab('users');
+          const BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com'\;
+          const res = await fetch(BASE_URL + '/api/auth/users', { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
+          const data = await res.json();
+          setUsers(Array.isArray(data) ? data : []);
+        }} style={styles.tab(activeTab === 'users')}>Users</button>
       </div>
 
       {activeTab === 'orders' && (
