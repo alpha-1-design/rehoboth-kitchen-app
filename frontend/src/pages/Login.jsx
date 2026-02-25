@@ -7,7 +7,7 @@ import { authAPI } from '../services/apiService';
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({ name: '', email: '', phone: '', password: '', confirmPassword: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', password: '', confirmPassword: '', referralCode: '' });
   const [errors, setErrors] = useState({ email: '', phone: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -158,6 +158,13 @@ const Login = () => {
             autoComplete={isLogin ? "current-password" : "new-password"} 
           />
 
+              {!isLogin && <input
+                name="referralCode"
+                placeholder="Referral Code (Optional)"
+                value={formData.referralCode}
+                onChange={handleChange}
+                style={styles.input}
+              />}
           {!isLogin && (
           <div style={{position:'relative'}}>
             <input

@@ -9,6 +9,7 @@ const Dashboard = () => {
   const [orders, setOrders] = useState([]);
   const [banners, setBanners] = useState([]);
   const [messages, setMessages] = useState([]);
+  const [users, setUsers] = useState([]);
   const [activeTab, setActiveTab] = useState('orders');
 
   useEffect(() => {
@@ -21,16 +22,18 @@ const Dashboard = () => {
 
   const fetchData = async () => {
     try {
-      const [resProd, resOrd, resBan, resMsg] = await Promise.all([
+      const [resProd, resOrd, resBan, resMsg, resUsers] = await Promise.all([
         productAPI.getAll(),
         orderAPI.getAll(),
         bannerAPI.getAll(),
-        supportAPI.getMessages()
+        supportAPI.getMessages(),
+        fetch((import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com') + '/api/auth/users', { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }).then(r => r.json())
       ]);
       setProducts(resProd);
       setOrders(resOrd.reverse());
       setBanners(resBan);
       setMessages(resMsg.reverse());
+      setUsers(Array.isArray(resUsers) ? resUsers : []);
     } catch (err) {
       console.warn('Failed to fetch data');
     }
@@ -127,6 +130,7 @@ const Dashboard = () => {
         <button onClick={() => setActiveTab('orders')} style={styles.tab(activeTab === 'orders')}>Orders</button>
         <button onClick={() => setActiveTab('inventory')} style={styles.tab(activeTab === 'inventory')}>Inventory</button>
         <button onClick={() => setActiveTab('support')} style={styles.tab(activeTab === 'support')}>Support</button>
+        <button onClick={() => setActiveTab('users')} style={styles.tab(activeTab === 'users')}>Users</button>
       </div>
 
       {activeTab === 'orders' && (
@@ -173,6 +177,34 @@ const Dashboard = () => {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {activeTab === 'users' && (
+        <div>
+          <h4 style={{marginBottom:'10px'}}>All Users ({users.length})</h4>
+          {users.map((u) => (
+            <div key={u._id} style={styles.card}>
+              <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+                <div>
+                  <strong>{u.name}</strong>
+                  <p style={{margin:'3px 0', fontSize:'12px', color:'#666'}}>{u.email}</p>
+                  <p style={{margin:'3px 0', fontSize:'12px', color:'#666'}}>{u.phone}</p>
+                </div>
+                <div style={{textAlign:'right'}}>
+                  <span style={{fontSize:'12px', background: u.isAdmin ? '#2C5530' : '#eee', color: u.isAdmin ? 'white' : '#333', padding:'3px 8px', borderRadius:'10px'}}>{u.isAdmin ? 'Admin' : 'User'}</span>
+                </div>
+              </div>
+              {u.referralCode && (
+                <div style={{marginTop:'8px', padding:'8px', background:'#f0f8f0', borderRadius:'8px'}}>
+                  <p style={{margin:0, fontSize:'12px'}}><strong>Referral Code:</strong> {u.referralCode}</p>
+                  <p style={{margin:'3px 0 0 0', fontSize:'12px'}}><strong>Referrals Made:</strong> {u.referralCount || 0}</p>
+                  {u.referredBy && <p style={{margin:'3px 0 0 0', fontSize:'12px'}}><strong>Referred By:</strong> {u.referredBy.name} ({u.referredBy.email})</p>}
+                </div>
+              )}
+            </div>
+          ))}
+          {users.length === 0 && <p style={{textAlign:'center'}}>No users yet.</p>}
         </div>
       )}
 
