@@ -16,7 +16,7 @@ const Home = () => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [toastMsg, setToastMsg] = useState('');
 
-  const categories = ['All', 'Kitchen', 'Home', 'Electronics'];
+  const categories = ['All', ...new Set(products.map(p => p.category).filter(Boolean))];;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,7 +47,7 @@ const Home = () => {
 
   useEffect(() => {
     let result = products;
-    if (activeCategory !== 'All') result = result.filter(item => item.category.includes(activeCategory));
+    if (activeCategory !== 'All') result = result.filter(item => item.category === activeCategory);
     if (searchTerm.trim() !== '') result = result.filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()));
     setFilteredProducts(result);
   }, [activeCategory, searchTerm, products]);
