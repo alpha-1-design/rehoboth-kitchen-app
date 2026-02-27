@@ -16,6 +16,10 @@ const Home = () => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [toastMsg, setToastMsg] = useState('');
 
+  const optimizeImage = (url) => {
+    if (!url || !url.includes('cloudinary')) return url;
+    return url.replace('/upload/', '/upload/w_400,f_auto,q_auto/');
+  };
   const categories = ['All', ...new Set(products.map(p => p.category).filter(Boolean))];;
 
   useEffect(() => {
@@ -193,7 +197,7 @@ const Home = () => {
         ) : (
           filteredProducts.map((item) => (
             <div key={item._id} style={styles.card} onClick={() => navigate(`/product/${item._id}`)}>
-              <img src={getImageUrl(item.image)} alt={item.name} style={styles.img} onError={(e) => {e.target.src='https://via.placeholder.com/150'}}/>
+              <img src={optimizeImage(getImageUrl(item.image))} loading="lazy" alt={item.name} style={styles.img} onError={(e) => {e.target.src='https://via.placeholder.com/150'}}/>
               <div style={styles.details}>
                 <h4 style={styles.name}>{item.name}</h4>
                 <div style={styles.price}>GHS {item.price}</div>
