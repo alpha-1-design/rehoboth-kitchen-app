@@ -70,9 +70,9 @@ export const videoAPI = {
 
 // Notification endpoints
 export const notificationAPI = {
-  getAll: () => apiCall('/api/extras/notifications'),
+  getAll: () => { const user = JSON.parse(localStorage.getItem('user') || '{}'); return apiCall('/api/extras/notifications?email=' + (user.email || '')); },
   markAsRead: (id) => apiCall(`/api/extras/notifications/${id}`, { method: 'PUT' }),
-  deleteAll: () => apiCall('/api/extras/notifications', { method: 'DELETE' }),
+  deleteAll: () => { const user = JSON.parse(localStorage.getItem('user') || '{}'); return apiCall('/api/extras/notifications?email=' + (user.email || ''), { method: 'DELETE' }); },
   delete: (id) => apiCall(`/api/extras/notifications/${id}`, { method: 'DELETE' }),
 };
 
