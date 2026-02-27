@@ -3,12 +3,12 @@ import API_BASE_URL from '../config/apiConfig';
 
 const apiCall = async (endpoint, options = {}) => {
   const url = `${API_BASE_URL}${endpoint}`;
+  const isFormData = options.body instanceof FormData;
   const defaultOptions = {
     headers: {
-      'Content-Type': 'application/json',
+      ...(!isFormData && { 'Content-Type': 'application/json' }),
       ...options.headers,
     },
-    credentials: 'include',
   };
 
   try {
@@ -41,15 +41,7 @@ export const authAPI = {
 export const productAPI = {
   getAll: () => apiCall('/api/products'),
   getById: (id) => apiCall(`/api/products/${id}`),
-  create: (data) => {
-    const BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com';
-    const token = localStorage.getItem('token');
-    return fetch(BASE_URL + '/api/products', {
-      method: 'POST',
-      headers: token ? { 'Authorization': `Bearer ${token}` } : {},
-      body: data,
-    }).then(res => res.json());
-  },
+  create: (data) => apiCall('/api/products', { method: 'POST', body: data }),
   update: (id, data) => apiCall(`/api/products/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   delete: (id) => apiCall(`/api/products/${id}`, { method: 'DELETE' }),
 };
