@@ -124,19 +124,15 @@ const Login = () => {
   };
 
   const slideImages = [
-    "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=600",
-    "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=600",
-    "https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=600",
-    "https://images.unsplash.com/photo-1571175443880-49e1d58bca77?w=600",
-    "https://images.unsplash.com/photo-1585659722983-3a675bad1180?w=600"
+    "/logo.png"
   ];
 
   const styles = {
     container: { position: 'relative', minHeight: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', fontFamily: "'Playfair Display', serif" },
     bgLayer: { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 },
     slideTrack: { display: 'flex', flexDirection: 'column', width: '100%', animation: 'slideUp 20s linear infinite' },
-    bgImage: { width: '100%', height: '250px', objectFit: 'cover', opacity: 0.8 },
-    overlay: { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(255, 255, 255, 0.85)', zIndex: 1, backdropFilter: 'blur(3px)' },
+    
+    overlay: { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'linear-gradient(135deg, #2C5530 0%, #1a3a1e 50%, #4a7c59 100%)', zIndex: 1 },
     card: { position: 'relative', zIndex: 10, backgroundColor: 'white', borderRadius: '30px', padding: '30px 25px', boxShadow: '0 20px 50px rgba(0,0,0,0.15)', textAlign: 'center', borderTop: '6px solid #2C5530', width: '90%', maxWidth: '400px' },
     input: { width: '100%', padding: '15px', marginBottom: '5px', borderRadius: '10px', border: '1px solid #ddd', fontSize: '16px', backgroundColor: '#fff' },
     btn: { width: '100%', padding: '15px', backgroundColor: '#2C5530', color: 'white', border: 'none', borderRadius: '10px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer', marginTop: '10px' },
@@ -149,7 +145,7 @@ const Login = () => {
       <style>{`@keyframes slideUp { 0% { transform: translateY(0); } 100% { transform: translateY(-50%); } }`}</style>
       <div style={styles.bgLayer}>
         <div style={styles.slideTrack}>
-          {[...slideImages, ...slideImages].map((img, i) => <img key={i} src={img} style={styles.bgImage} alt="bg" />)}
+          
         </div>
       </div>
       <div style={styles.overlay}></div>
