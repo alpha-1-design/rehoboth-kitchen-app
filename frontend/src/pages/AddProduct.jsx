@@ -32,7 +32,7 @@ const AddProduct = () => {
       navigate('/');
     } catch (err) {
       console.warn('Failed to add product');
-      alert('Failed to add product');
+      alert('Failed: ' + err.message);
     } finally {
       setLoading(false);
     }
