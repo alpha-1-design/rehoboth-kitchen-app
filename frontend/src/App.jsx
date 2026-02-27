@@ -37,7 +37,7 @@ function App() {
   const [showSplash, setShowSplash] = useState(true);
 
   if (showSplash) {
-    return <SplashScreen onComplete={() => setShowSplash(false)} />;
+    return <SplashScreen onFinish={() => setShowSplash(false)} />;
   }
 
   return (
