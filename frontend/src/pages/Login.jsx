@@ -132,7 +132,7 @@ const Login = () => {
     bgLayer: { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 },
     slideTrack: { display: 'flex', flexDirection: 'column', width: '100%', animation: 'slideUp 20s linear infinite' },
     
-    overlay: { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'linear-gradient(135deg, #2C5530 0%, #1a3a1e 50%, #4a7c59 100%)', zIndex: 1 },
+    overlay: { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'linear-gradient(180deg, #0d1f0f 0%, #1a3a1e 30%, #2C5530 70%, #4a7c59 100%)', zIndex: 1 },
     card: { position: 'relative', zIndex: 10, backgroundColor: 'white', borderRadius: '30px', padding: '30px 25px', boxShadow: '0 20px 50px rgba(0,0,0,0.15)', textAlign: 'center', borderTop: '6px solid #2C5530', width: '90%', maxWidth: '400px' },
     input: { width: '100%', padding: '15px', marginBottom: '5px', borderRadius: '10px', border: '1px solid #ddd', fontSize: '16px', backgroundColor: '#fff' },
     btn: { width: '100%', padding: '15px', backgroundColor: '#2C5530', color: 'white', border: 'none', borderRadius: '10px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer', marginTop: '10px' },
