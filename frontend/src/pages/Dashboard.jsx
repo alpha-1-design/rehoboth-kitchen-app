@@ -159,6 +159,7 @@ const Dashboard = () => {
                   <option value="Delivered">Delivered</option>
                   <option value="Cancelled">Cancelled</option>
                 </select>
+                <button onClick={() => sendWhatsAppReceipt(order)} style={{padding:'8px 12px', background:'#25D366', color:'white', border:'none', borderRadius:'5px', fontSize:'13px', cursor:'pointer', whiteSpace:'nowrap'}}>📲 Receipt</button>
               </div>
             </div>
           ))}
