@@ -41,7 +41,15 @@ export const authAPI = {
 export const productAPI = {
   getAll: () => apiCall('/api/products'),
   getById: (id) => apiCall(`/api/products/${id}`),
-  create: (data) => apiCall('/api/products', { method: 'POST', body: data }),
+  create: (data) => {
+    const BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com'\;
+    const token = localStorage.getItem('token');
+    return fetch(BASE_URL + '/api/products', {
+      method: 'POST',
+      headers: token ? { 'Authorization': 'Bearer ' + token } : {},
+      body: data,
+    }).then(res => res.json());
+  },
   update: (id, data) => apiCall(`/api/products/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   delete: (id) => apiCall(`/api/products/${id}`, { method: 'DELETE' }),
 };
