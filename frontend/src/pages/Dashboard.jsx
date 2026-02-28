@@ -97,7 +97,7 @@ const Dashboard = () => {
         await orderAPI.update(id, { status: 'Delivered' });
         fetchData();
       } catch (err) {
-        alert('Failed to update order');
+        alert('Failed to update status');
       }
     }
   };
@@ -150,7 +150,16 @@ const Dashboard = () => {
                 {order.items.map((i, idx) => <div key={idx}>• {i.name}</div>)}
                 <div style={{marginTop:'5px', fontWeight:'bold'}}>Total: GHS {order.total} | {order.paymentMethod}</div>
               </div>
-              {order.status === 'Pending' && <button onClick={() => markDelivered(order._id)} style={{marginTop:'10px', width:'100%', padding:'10px', background:'#2C5530', color:'white', border:'none', borderRadius:'5px'}}>Mark Delivered</button>}
+              <div style={{marginTop:'10px', display:'flex', gap:'8px'}}>
+                <select onChange={(e) => updateStatus(order._id, e.target.value)} defaultValue={order.status} style={{flex:1, padding:'8px', borderRadius:'5px', border:'1px solid #ddd', fontSize:'13px'}}>
+                  <option value="Pending">Pending</option>
+                  <option value="Confirmed">Confirmed</option>
+                  <option value="Processing">Processing</option>
+                  <option value="Shipped">Shipped</option>
+                  <option value="Delivered">Delivered</option>
+                  <option value="Cancelled">Cancelled</option>
+                </select>
+              </div>
             </div>
           ))}
           {orders.length === 0 && <p style={{textAlign:'center'}}>No orders.</p>}
