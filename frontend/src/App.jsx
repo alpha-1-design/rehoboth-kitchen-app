@@ -26,6 +26,7 @@ import InstallBanner from './components/InstallBanner';
 import VideoFeed from './pages/VideoFeed';
 import AddVideo from './pages/AddVideo';
 import Wishlist from './pages/Wishlist';
+import MyOrders from './pages/MyOrders';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
