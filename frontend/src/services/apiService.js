@@ -42,7 +42,7 @@ export const productAPI = {
   getAll: () => apiCall('/api/products'),
   getById: (id) => apiCall(`/api/products/${id}`),
   create: (data) => {
-    const BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com'\;
+    const BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com';
     const token = localStorage.getItem('token');
     return fetch(BASE_URL + '/api/products', {
       method: 'POST',
