@@ -81,3 +81,26 @@ const getOrders = async (req, res) => {
 };
 
 module.exports = { createOrder, getOrders };
+
+const updateOrderStatus = async (req, res) => {
+    const { status, estimatedDelivery } = req.body;
+    const validStatuses = ['Pending', 'Confirmed', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
+    if (!validStatuses.includes(status)) return res.status(400).json({ message: 'Invalid status' });
+    try {
+        const order = await ordersDB.findOne({ _id: req.params.id });
+        if (!order) return res.status(404).json({ message: 'Order not found' });
+        
+        const statusHistory = order.statusHistory || [];
+        statusHistory.push({ status, time: new Date(), updatedBy: req.user.name });
+        
+        await ordersDB.update({ _id: req.params.id }, { 
+            $set: { status, statusHistory, estimatedDelivery: estimatedDelivery || '' }
+        });
+        
+        await createNotification(order.userEmail, `Your order #${req.params.id.slice(-6)} is now ${status}`);
+        
+        res.json({ message: 'Status updated' });
+    } catch (error) { res.status(500).json({ message: error.message }); }
+};
+
+module.exports = { ...module.exports, updateOrderStatus };
