@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
-const { register, login, updateProfile, forgotPassword, changePassword, googleLogin, getUsers, fixReferralCodes } = require('../controllers/authController');
+const { resetUserPassword, register, login, updateProfile, forgotPassword, changePassword, googleLogin, getUsers, fixReferralCodes } = require('../controllers/authController');
 const { protect, admin } = require('../middleware/authMiddleware');
 
 // Configure Image Storage (Same as products)
@@ -27,4 +27,5 @@ router.get('/users', protect, admin, getUsers);
 router.post('/fix-referrals', protect, admin, fixReferralCodes);
 router.post('/change-password', changePassword);
 
+router.post('/reset-user-password', protect, admin, resetUserPassword);
 module.exports = router;
