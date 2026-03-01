@@ -262,4 +262,15 @@ const getUsers = async (req, res) => {
     }
 };
 
-module.exports = { register, login, updateProfile, forgotPassword, changePassword, googleLogin, getUsers, fixReferralCodes };
+const resetUserPassword = async (req, res) => {
+    const { email, newPassword } = req.body;
+    try {
+        const bcrypt = require('bcryptjs');
+        const hashed = await bcrypt.hash(newPassword, 10);
+        await usersDB.update({ email }, { $set: { password: hashed } });
+        res.json({ message: 'Password reset successful' });
+    } catch (error) { res.status(500).json({ message: error.message }); }
+};
+
+module.exports = { register, login, updateProfile, forgotPassword, changePassword, googleLogin, getUsers, fixReferralCodes, resetUserPassword };
+

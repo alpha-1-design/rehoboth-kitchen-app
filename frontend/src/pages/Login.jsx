@@ -132,7 +132,7 @@ const Login = () => {
     bgLayer: { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 },
     slideTrack: { display: 'flex', flexDirection: 'column', width: '100%', animation: 'slideUp 20s linear infinite' },
     
-    overlay: { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'linear-gradient(180deg, #0d1f0f 0%, #1a3a1e 30%, #2C5530 70%, #4a7c59 100%)', zIndex: 1 },
+    overlay: { position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: '#f5f0e8', zIndex: 1, overflow: 'hidden' },
     card: { position: 'relative', zIndex: 10, backgroundColor: 'white', borderRadius: '30px', padding: '30px 25px', boxShadow: '0 20px 50px rgba(0,0,0,0.15)', textAlign: 'center', borderTop: '6px solid #2C5530', width: '90%', maxWidth: '400px' },
     input: { width: '100%', padding: '15px', marginBottom: '5px', borderRadius: '10px', border: '1px solid #ddd', fontSize: '16px', backgroundColor: '#fff' },
     btn: { width: '100%', padding: '15px', backgroundColor: '#2C5530', color: 'white', border: 'none', borderRadius: '10px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer', marginTop: '10px' },
@@ -148,7 +148,58 @@ const Login = () => {
           
         </div>
       </div>
-      <div style={styles.overlay}></div>
+      <div style={styles.overlay}>
+        <style>{`
+          @keyframes slideRight {
+            0% { transform: translateX(-100px) rotate(var(--rot)); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateX(120vw) rotate(var(--rot)); opacity: 0; }
+          }
+          @keyframes slideLeft {
+            0% { transform: translateX(120vw) rotate(var(--rot)); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateX(-100px) rotate(var(--rot)); opacity: 0; }
+          }
+          .rk-text {
+            position: absolute;
+            white-space: nowrap;
+            font-weight: bold;
+            color: #2C5530;
+            pointer-events: none;
+            user-select: none;
+          }
+        `}</style>
+        {[
+          { top: '5%', fontSize: '14px', opacity: 0.08, rot: '-20deg', dur: '12s', delay: '0s', dir: 'slideRight' },
+          { top: '12%', fontSize: '22px', opacity: 0.06, rot: '15deg', dur: '18s', delay: '2s', dir: 'slideLeft' },
+          { top: '20%', fontSize: '11px', opacity: 0.1, rot: '-35deg', dur: '14s', delay: '4s', dir: 'slideRight' },
+          { top: '28%', fontSize: '28px', opacity: 0.05, rot: '8deg', dur: '20s', delay: '1s', dir: 'slideLeft' },
+          { top: '36%', fontSize: '16px', opacity: 0.09, rot: '-15deg', dur: '16s', delay: '3s', dir: 'slideRight' },
+          { top: '44%', fontSize: '20px', opacity: 0.07, rot: '25deg', dur: '22s', delay: '5s', dir: 'slideLeft' },
+          { top: '52%', fontSize: '13px', opacity: 0.1, rot: '-40deg', dur: '13s', delay: '0.5s', dir: 'slideRight' },
+          { top: '60%', fontSize: '24px', opacity: 0.06, rot: '10deg', dur: '19s', delay: '2.5s', dir: 'slideLeft' },
+          { top: '68%', fontSize: '17px', opacity: 0.08, rot: '-22deg', dur: '15s', delay: '4.5s', dir: 'slideRight' },
+          { top: '76%', fontSize: '30px', opacity: 0.05, rot: '18deg', dur: '21s', delay: '1.5s', dir: 'slideLeft' },
+          { top: '84%', fontSize: '12px', opacity: 0.09, rot: '-30deg', dur: '17s', delay: '3.5s', dir: 'slideRight' },
+          { top: '92%', fontSize: '19px', opacity: 0.07, rot: '5deg', dur: '23s', delay: '6s', dir: 'slideLeft' },
+        ].map((item, i) => (
+          <span
+            key={i}
+            className="rk-text"
+            style={{
+              top: item.top,
+              fontSize: item.fontSize,
+              opacity: item.opacity,
+              '--rot': item.rot,
+              animation: `${item.dir} ${item.dur} linear ${item.delay} infinite`,
+            }}
+          >
+            Rehoboth Kitchen • Rehoboth Kitchen • Rehoboth Kitchen •
+          </span>
+        ))}
+      </div>
 
       <div style={{position:'absolute', top:0, width:'100%', padding:'15px', display:'flex', justifyContent:'space-between', zIndex:20, fontWeight:'bold'}}>
         <span>{currentTime}</span><span>Rehoboth Kitchen</span>
