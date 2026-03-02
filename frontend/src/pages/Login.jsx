@@ -105,8 +105,10 @@ const Login = () => {
       localStorage.setItem('token', res.token);
       localStorage.setItem('user', JSON.stringify(res.user));
       toast(`Welcome, ${res.user.name}!`, "success");
-      if (res.user.email === OWNER_EMAIL) navigate('/dashboard'); 
-      else navigate('/'); 
+      setTimeout(() => {
+        if (res.user.email === OWNER_EMAIL) navigate('/dashboard');
+        else navigate('/');
+      }, 500);
     } catch (err) { 
       toast(err.message || 'Action Failed', "error"); 
     }
