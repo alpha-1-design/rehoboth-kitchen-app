@@ -1,8 +1,10 @@
+import { useToast } from '../components/Toast';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { videoAPI } from '../services/apiService';
 
 const VideoFeed = () => {
+  const toast = useToast();
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -35,10 +37,10 @@ const VideoFeed = () => {
       try {
         await videoAPI.delete(id);
         setVideos(videos.filter(v => v._id !== id));
-        alert('Video deleted');
+        toast('Video deleted', "success");
       } catch (err) {
         console.warn('Failed to delete video');
-        alert('Failed to delete video');
+        toast('Failed to delete video', "error");
       }
     }
   };

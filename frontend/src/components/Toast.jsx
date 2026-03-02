@@ -1,56 +1,64 @@
-import React, { useEffect } from 'react';
+import { useState, useEffect, createContext, useContext, useCallback } from 'react';
 
-const Toast = ({ message, type = 'success', onClose }) => {
-  useEffect(() => {
-    // Auto hide after 3 seconds
-    const timer = setTimeout(() => {
-      onClose();
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, [onClose]);
+const ToastContext = createContext();
 
-  const typeStyles = {
-    success: { icon: '✔', color: '#2ecc71' },
-    error: { icon: '✕', color: '#e74c3c' },
-    warning: { icon: '⚠', color: '#f39c12' },
-    info: { icon: 'ℹ', color: '#3498db' }
-  };
+export function ToastProvider({ children }) {
+  const [toasts, setToasts] = useState([]);
 
-  const { icon, color } = typeStyles[type] || typeStyles.success;
+  const showToast = useCallback((message, type = 'info') => {
+    const id = Date.now();
+    setToasts(prev => [...prev, { id, message, type }]);
+    setTimeout(() => {
+      setToasts(prev => prev.filter(t => t.id !== id));
+    }, 3500);
+  }, []);
 
-  const styles = {
-    toast: {
-      position: 'fixed',
-      top: '20px',
-      left: '50%',
-      transform: 'translateX(-50%)',
-      backgroundColor: 'rgba(30, 30, 30, 0.9)',
-      color: 'white',
-      padding: '12px 24px',
-      borderRadius: '50px',
-      boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
-      zIndex: 9999,
-      fontSize: '14px',
-      fontWeight: 'bold',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '10px',
-      animation: 'slideDown 0.3s ease-out'
-    },
-    icon: { color }
-  };
+  const removeToast = (id) => setToasts(prev => prev.filter(t => t.id !== id));
 
   return (
-    <div style={styles.toast}>
-      <span style={styles.icon}>{icon}</span> {message}
+    <ToastContext.Provider value={showToast}>
+      {children}
+      <div style={{
+        position: 'fixed', top: '20px', left: '50%', transform: 'translateX(-50%)',
+        zIndex: 99999, display: 'flex', flexDirection: 'column', gap: '10px',
+        width: '90%', maxWidth: '380px', pointerEvents: 'none'
+      }}>
+        {toasts.map(toast => (
+          <div key={toast.id} onClick={() => removeToast(toast.id)} style={{
+            pointerEvents: 'all',
+            padding: '14px 18px',
+            borderRadius: '14px',
+            fontSize: '14px',
+            fontWeight: '600',
+            color: 'white',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
+            cursor: 'pointer',
+            animation: 'slideDown 0.3s ease',
+            background: toast.type === 'success' ? 'linear-gradient(135deg, #2C5530, #4a7c59)'
+              : toast.type === 'error' ? 'linear-gradient(135deg, #c0392b, #e74c3c)'
+              : toast.type === 'warning' ? 'linear-gradient(135deg, #e67e22, #f39c12)'
+              : 'linear-gradient(135deg, #2980b9, #3498db)',
+            display: 'flex', alignItems: 'center', gap: '10px'
+          }}>
+            <span style={{ fontSize: '18px' }}>
+              {toast.type === 'success' ? '✅'
+                : toast.type === 'error' ? '❌'
+                : toast.type === 'warning' ? '⚠️' : 'ℹ️'}
+            </span>
+            {toast.message}
+          </div>
+        ))}
+      </div>
       <style>{`
         @keyframes slideDown {
-          from { top: -50px; opacity: 0; }
-          to { top: 20px; opacity: 1; }
+          from { opacity: 0; transform: translateY(-20px); }
+          to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
-    </div>
+    </ToastContext.Provider>
   );
-};
+}
 
-export default Toast;
+export function useToast() {
+  return useContext(ToastContext);
+}

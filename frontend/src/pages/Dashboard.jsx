@@ -1,8 +1,10 @@
+import { useToast } from '../components/Toast';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { productAPI, orderAPI, bannerAPI, supportAPI } from '../services/apiService';
 
 const Dashboard = () => {
+  const toast = useToast();
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [products, setProducts] = useState([]);
@@ -50,10 +52,10 @@ const Dashboard = () => {
     if (reply) {
       try {
         await supportAPI.replyToMessage(id, reply);
-        alert("Reply sent!");
+        toast("Reply sent!", "success");
         fetchData();
       } catch (err) {
-        alert('Failed to send reply');
+        toast('Failed to send reply', "error");
       }
     }
   };
@@ -64,7 +66,7 @@ const Dashboard = () => {
         await supportAPI.deleteMessage(id);
         fetchData();
       } catch (err) {
-        alert('Failed to delete message');
+        toast('Failed to delete message', "error");
       }
     }
   };
@@ -75,7 +77,7 @@ const Dashboard = () => {
         await productAPI.delete(id);
         fetchData();
       } catch (err) {
-        alert('Failed to delete product');
+        toast('Failed to delete product', "error");
       }
     }
   };
@@ -86,7 +88,7 @@ const Dashboard = () => {
         await bannerAPI.delete(id);
         fetchData();
       } catch (err) {
-        alert('Failed to delete banner');
+        toast('Failed to delete banner', "error");
       }
     }
   };
@@ -97,7 +99,7 @@ const Dashboard = () => {
         await orderAPI.update(id, { status: 'Delivered' });
         fetchData();
       } catch (err) {
-        alert('Failed to update status');
+        toast('Failed to update status', "error");
       }
     }
   };
@@ -208,9 +210,9 @@ const Dashboard = () => {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
               });
               const data = await res.json();
-              alert(data.message);
+              toast(data.message, "error");
               fetchData();
-              } catch(err) { alert('Error: ' + err.message); }
+              } catch(err) { toast('Error: ' + err.message, "error"); }
             }} style={{background:'#2C5530', color:'white', border:'none', padding:'8px 12px', borderRadius:'8px', fontSize:'12px'}}>
               Fix Referral Codes
             </button>

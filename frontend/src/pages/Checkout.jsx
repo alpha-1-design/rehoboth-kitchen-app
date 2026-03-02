@@ -1,8 +1,10 @@
+import { useToast } from '../components/Toast';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { orderAPI } from '../services/apiService';
 
 const Checkout = () => {
+  const toast = useToast();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ name: '', phone: '', address: '', note: '' });
   const [loading, setLoading] = useState(false);
@@ -21,7 +23,7 @@ const Checkout = () => {
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
     if (!formData.name || !formData.address || !formData.phone) {
-      alert('Please fill in your Delivery Details');
+      toast('Please fill in your Delivery Details', "warning");
       return;
     }
 
@@ -40,7 +42,7 @@ const Checkout = () => {
       navigate('/success');
     } catch (err) {
       console.warn('Order failed');
-      alert('Something went wrong. Please try again.');
+      toast('Something went wrong. Please try again.', "warning");
     } finally {
       setLoading(false);
     }

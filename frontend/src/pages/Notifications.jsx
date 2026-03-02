@@ -1,8 +1,10 @@
+import { useToast } from '../components/Toast';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { notificationAPI } from '../services/apiService';
 
 const Notifications = () => {
+  const toast = useToast();
   const [notifs, setNotifs] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -29,10 +31,10 @@ const Notifications = () => {
     try {
       await notificationAPI.deleteAll();
       setNotifs([]);
-      alert('All notifications cleared');
+      toast('All notifications cleared', "success");
     } catch (err) {
       console.warn('Failed to clear notifications');
-      alert('Failed to clear notifications');
+      toast('Failed to clear notifications', "error");
     }
   };
 

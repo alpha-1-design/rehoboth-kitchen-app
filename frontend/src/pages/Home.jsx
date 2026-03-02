@@ -1,10 +1,11 @@
+import { useToast } from '../components/Toast';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { productAPI, bannerAPI, notificationAPI } from '../services/apiService';
 import Icon from '../components/Icons'; 
-import Toast from '../components/Toast'; 
 
 const Home = () => {
+  const toast = useToast();
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -60,7 +61,7 @@ const Home = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      alert("Voice search is not supported in this browser.");
+      toast("Voice search is not supported in this browser.", "error");
       return;
     }
 

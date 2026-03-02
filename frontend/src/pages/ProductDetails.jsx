@@ -1,3 +1,4 @@
+import { useToast } from '../components/Toast';
 
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -5,6 +6,7 @@ import { productAPI } from '../services/apiService';
 import Icon from '../components/Icons';
 
 const ProductDetails = () => {
+  const toast = useToast();
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
@@ -59,17 +61,17 @@ const ProductDetails = () => {
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
     cart.push(product);
     localStorage.setItem('cart', JSON.stringify(cart));
-    alert(`${product.name} added to cart!`);
+    toast(`${product.name} added to cart!`, "success");
   };
 
   const addToGiftList = () => {
-    alert("🎁 Added to your Gift Registry!\n\n(Share your 'Me' profile link with friends to let them buy this for you!)");
+    toast("Added to your Gift Registry! Share your profile link with friends so they can buy this for you!", "success");
   };
 
   const submitQuestion = async (e) => {
     e.preventDefault();
-    if (!user) return alert('Please login to ask a question');
-    if (!question.trim()) return alert('Please enter a question');
+    if (!user) return toast('Please login to ask a question', "warning");
+    if (!question.trim()) return toast('Please enter a question', "warning");
     try {
       const BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com';
       const res = await fetch(BASE_URL + `/api/products/${id}/questions`, {
@@ -78,17 +80,17 @@ const ProductDetails = () => {
         body: JSON.stringify({ question, userName: user.name })
       });
       const data = await res.json();
-      alert(data.message);
+      toast(data.message, "error");
       setQuestion('');
       const updated = await fetch(BASE_URL + `/api/products/${id}`);
       setProduct(await updated.json());
     } catch (err) {
-      alert('Failed to submit question');
+      toast('Failed to submit question', "error");
     }
   };
 
   const submitAnswer = async (index) => {
-    if (!answer.trim()) return alert('Please enter an answer');
+    if (!answer.trim()) return toast('Please enter an answer', "warning");
     try {
       const BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com';
       const res = await fetch(BASE_URL + `/api/products/${id}/questions`, {
@@ -97,20 +99,20 @@ const ProductDetails = () => {
         body: JSON.stringify({ answer, questionIndex: index })
       });
       const data = await res.json();
-      alert(data.message);
+      toast(data.message, "error");
       setAnswer('');
       setAnsweringIndex(null);
       const updated = await fetch(BASE_URL + `/api/products/${id}`);
       setProduct(await updated.json());
     } catch (err) {
-      alert('Failed to submit answer');
+      toast('Failed to submit answer', "error");
     }
   };
 
   const submitReview = async (e) => {
     e.preventDefault();
     const user = JSON.parse(localStorage.getItem('user'));
-    if (!user) return alert("Please Login to write a review");
+    if (!user) return toast("Please Login to write a review", "warning");
 
     try {
       // Note: You may need to add a review endpoint to apiService
@@ -120,12 +122,12 @@ const ProductDetails = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ rating, comment, userName: user.name })
       });
-      alert('Review Submitted!');
+      toast('Review Submitted!', "success");
       setComment('');
       setRefresh(!refresh);
     } catch (err) {
       console.warn('Failed to submit review');
-      alert('Failed to submit review');
+      toast('Failed to submit review', "error");
     }
   };
 

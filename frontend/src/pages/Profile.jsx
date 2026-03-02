@@ -1,3 +1,4 @@
+import { useToast } from '../components/Toast';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -6,6 +7,7 @@ import Icon from '../components/Icons';
 import { validateGhanaPhone } from '../utils/validators';
 
 const Profile = () => {
+  const toast = useToast();
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
 
@@ -53,13 +55,13 @@ const Profile = () => {
     if (navigator.share) {
       navigator.share({ title: 'Rehoboth Kitchen', text: 'Best appliances!', url: window.location.origin });
     } else {
-      alert("Link copied: " + window.location.origin);
+      toast("Link copied: " + window.location.origin, "success");
     }
   };
 
   const handleChangePassword = async () => {
-    if (newPassword !== confirmNewPassword) return alert('New passwords do not match!');
-    if (newPassword.length < 8) return alert('Password must be at least 8 characters!');
+    if (newPassword !== confirmNewPassword) return toast('New passwords do not match!', "warning");
+    if (newPassword.length < 8) return toast('Password must be at least 8 characters!', "warning");
     try {
       const BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com';
       const res = await fetch(BASE_URL + '/api/auth/change-password', {
@@ -69,27 +71,27 @@ const Profile = () => {
       });
       const data = await res.json();
       if (res.ok) {
-        alert(data.message);
+        toast(data.message, "error");
         setIsChangingPassword(false);
         setCurrentPassword('');
         setNewPassword('');
         setConfirmNewPassword('');
       } else {
-        alert(data.message);
+        toast(data.message, "error");
       }
     } catch (err) {
-      alert('Failed to change password');
+      toast('Failed to change password', "error");
     }
   };
 
   const handleSave = async () => {
     if (editPhone) {
         const phoneCheck = validateGhanaPhone(editPhone);
-        if (!phoneCheck.isValid) return alert("Contact Phone: " + phoneCheck.message);
+        if (!phoneCheck.isValid) return toast("Contact Phone: " + phoneCheck.message, "error");
     }
     if (editMomo) {
         const momoCheck = validateGhanaPhone(editMomo);
-        if (!momoCheck.isValid) return alert("Momo Number: " + momoCheck.message);
+        if (!momoCheck.isValid) return toast("Momo Number: " + momoCheck.message, "error");
     }
 
     const formData = new FormData();
@@ -108,8 +110,8 @@ const Profile = () => {
       localStorage.setItem('user', JSON.stringify(res.data.user));
       setUser(res.data.user);
       setIsEditing(false);
-      alert("Profile Updated!");
-    } catch (err) { alert("Update failed"); }
+      toast("Profile Updated!", "success");
+    } catch (err) { toast("Update failed", "error"); }
   };
 
   if (!user) return null;
@@ -205,7 +207,7 @@ const Profile = () => {
             <span style={{fontSize:'20px', fontWeight:'bold', letterSpacing:'2px', color:'#2C5530'}}>{user.referralCode}</span>
             <button onClick={() => {
               navigator.clipboard.writeText(`Sign up on Rehoboth Kitchen using my referral code: ${user.referralCode} at https://rehoboth-kitchen-app.vercel.app`);
-              alert('Referral link copied!');
+              toast('Referral link copied!', "success");
             }} style={{background:'#2C5530', color:'white', border:'none', padding:'5px 12px', borderRadius:'8px', fontSize:'12px'}}>Copy</button>
           </div>
           <p style={{margin:'5px 0 0 0', fontSize:'12px', color:'#888'}}>You have referred {user.referralCount || 0} people</p>

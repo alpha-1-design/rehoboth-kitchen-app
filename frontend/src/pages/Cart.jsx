@@ -1,8 +1,10 @@
+import { useToast } from '../components/Toast';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { orderAPI } from '../services/apiService';
 
 const Cart = () => {
+  const toast = useToast();
   const navigate = useNavigate();
   const [cart, setCart] = useState([]);
   const [total, setTotal] = useState(0);
@@ -69,7 +71,7 @@ const Cart = () => {
       navigate('/success');
     } catch (err) {
       console.warn('Order failed');
-      alert('Order failed. Please try again.');
+      toast('Order failed. Please try again.', "warning");
     } finally {
       setLoading(false);
     }
