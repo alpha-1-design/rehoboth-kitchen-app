@@ -1,3 +1,4 @@
+import { useToast } from '../components/Toast';
 import { useState, useEffect } from 'react';
 
 
@@ -6,6 +7,7 @@ import { validateGhanaPhone, validateEmail } from '../utils/validators';
 import { authAPI } from '../services/apiService';
 
 const Login = () => {
+  const toast = useToast();
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', password: '', confirmPassword: '', referralCode: '' });
   const [errors, setErrors] = useState({ email: '', phone: '', password: '' });
@@ -28,7 +30,7 @@ const Login = () => {
       window.location.href = '/';
     }
     if (error) {
-      alert('Google login failed. Please try again.');
+      toast('Google login failed. Please try again.', "warning");
     }
   }, []);
 
@@ -84,16 +86,16 @@ const Login = () => {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = 'https://rehoboth-backend.onrender.com/api/auth/google'\;
+    window.location.href = 'https://rehoboth-backend.onrender.com/api/auth/google';
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!isLogin && errors.phone) return alert(errors.phone);
-    if (errors.email) return alert(errors.email);
-    if (!isLogin && formData.password !== formData.confirmPassword) return alert("Passwords do not match!");
-    if (!isLogin && !isStrongPassword(formData.password)) return alert("Weak Password! Must be 8+ characters with uppercase and a number.");
+    if (!isLogin && errors.phone) return toast(errors.phone, "error");
+    if (errors.email) return toast(errors.email, "error");
+    if (!isLogin && formData.password !== formData.confirmPassword) return toast("Passwords do not match!", "warning");
+    if (!isLogin && !isStrongPassword(formData.password)) return toast("Weak Password! Must be 8+ characters with uppercase and a number.", "warning");
 
     try {
       const res = isLogin 
@@ -102,11 +104,11 @@ const Login = () => {
       
       localStorage.setItem('token', res.token);
       localStorage.setItem('user', JSON.stringify(res.user));
-      alert(`Welcome, ${res.user.name}!`);
+      toast(`Welcome, ${res.user.name}!`, "success");
       if (res.user.email === OWNER_EMAIL) navigate('/dashboard'); 
       else navigate('/'); 
     } catch (err) { 
-      alert(err.message || 'Action Failed'); 
+      toast(err.message || 'Action Failed', "error"); 
     }
   };
 
@@ -280,9 +282,9 @@ const Login = () => {
                 body: JSON.stringify({ email })
               });
               const data = await res.json();
-              alert(data.message);
+              toast(data.message, "error");
             } catch(e) {
-              alert('Failed. Try again.');
+              toast('Failed. Try again.', "error");
             }
           }} style={{background:'none', border:'none', color:'#888', marginTop:'10px'}}>Forgot Password?</button>}
       </div>

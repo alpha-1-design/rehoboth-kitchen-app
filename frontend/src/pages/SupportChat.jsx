@@ -1,8 +1,10 @@
+import { useToast } from '../components/Toast';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supportAPI } from '../services/apiService';
 
 const SupportChat = () => {
+  const toast = useToast();
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
   const [history, setHistory] = useState([]);
@@ -54,7 +56,7 @@ const SupportChat = () => {
       await fetchHistory();
     } catch (err) {
       console.warn('Failed to send message');
-      alert('Failed to send message');
+      toast('Failed to send message', "error");
     } finally {
       setLoading(false);
     }

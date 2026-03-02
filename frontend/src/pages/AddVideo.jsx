@@ -1,8 +1,10 @@
+import { useToast } from '../components/Toast';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { videoAPI } from '../services/apiService';
 
 const AddVideo = () => {
+  const toast = useToast();
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [file, setFile] = useState(null);
@@ -19,11 +21,11 @@ const AddVideo = () => {
 
     try {
       await videoAPI.create(formData);
-      alert('Video Uploaded to TV!');
+      toast('Video Uploaded to TV!', "success");
       navigate('/videos');
     } catch (err) {
       console.warn('Upload failed');
-      alert('Upload failed');
+      toast('Upload failed', "error");
     }
     finally {
       setLoading(false);

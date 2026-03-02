@@ -1,8 +1,10 @@
+import { useToast } from '../components/Toast';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { bannerAPI } from '../services/apiService';
 
 const AddBanner = () => {
+  const toast = useToast();
   const [title, setTitle] = useState('');
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -14,7 +16,7 @@ const AddBanner = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!image) return alert("Please select an image");
+    if (!image) return toast("Please select an image", "warning");
 
     const formData = new FormData();
     formData.append('title', title);
@@ -23,11 +25,11 @@ const AddBanner = () => {
     setLoading(true);
     try {
       await bannerAPI.create(formData);
-      alert('Banner Added to Slider!');
+      toast('Banner Added to Slider!', "success");
       navigate('/dashboard');
     } catch (err) {
       console.warn('Failed to upload banner');
-      alert('Failed to upload banner');
+      toast('Failed to upload banner', "error");
     } finally {
       setLoading(false);
     }

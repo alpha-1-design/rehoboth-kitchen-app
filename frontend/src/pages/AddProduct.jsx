@@ -1,8 +1,10 @@
+import { useToast } from '../components/Toast';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { productAPI } from '../services/apiService';
 
 const AddProduct = () => {
+  const toast = useToast();
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
@@ -28,11 +30,11 @@ const AddProduct = () => {
 
     try {
       await productAPI.create(formData);
-      alert('Product Added!');
+      toast('Product Added!', "success");
       navigate('/');
     } catch (err) {
       console.warn('Failed to add product');
-      alert('Failed: ' + err.message);
+      toast('Failed: ' + err.message, "error");
     } finally {
       setLoading(false);
     }

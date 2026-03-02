@@ -1,8 +1,10 @@
+import { useToast } from '../components/Toast';
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { productAPI } from '../services/apiService';
 
 const EditProduct = () => {
+  const toast = useToast();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -34,11 +36,11 @@ const EditProduct = () => {
 
     try {
       await productAPI.update(id, data);
-      alert('Inventory Updated Successfully!');
+      toast('Inventory Updated Successfully!', "success");
       navigate('/dashboard');
     } catch (err) {
       console.warn('Update failed');
-      alert('Update failed');
+      toast('Update failed', "error");
     } finally {
       setLoading(false);
     }

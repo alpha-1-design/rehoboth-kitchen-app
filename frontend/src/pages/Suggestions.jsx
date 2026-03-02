@@ -1,8 +1,10 @@
+import { useToast } from '../components/Toast';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { suggestionAPI } from '../services/apiService';
 
 const Suggestions = () => {
+  const toast = useToast();
   const navigate = useNavigate();
   const [text, setText] = useState('');
   const [loading, setLoading] = useState(false);
@@ -12,7 +14,7 @@ const Suggestions = () => {
     const user = JSON.parse(localStorage.getItem('user'));
     
     if (!user) {
-      alert('Please login to send a suggestion');
+      toast('Please login to send a suggestion', "warning");
       return navigate('/login');
     }
 
@@ -24,11 +26,11 @@ const Suggestions = () => {
         email: user.email,
         text: text
       });
-      alert('Suggestion Sent! Thank you.');
+      toast('Suggestion Sent! Thank you.', "success");
       navigate('/profile');
     } catch (err) {
       console.warn('Failed to send suggestion');
-      alert('Failed to send suggestion');
+      toast('Failed to send suggestion', "error");
     } finally {
       setLoading(false);
     }

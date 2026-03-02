@@ -1,8 +1,10 @@
+import { useToast } from '../components/Toast';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { subscribeToPush, isSubscribed, unsubscribeFromPush } from '../utils/pushNotifications';
 
 const NotificationSettings = () => {
+  const toast = useToast();
   const [subscribed, setSubscribed] = useState(false);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -26,7 +28,7 @@ const NotificationSettings = () => {
       const success = await unsubscribeFromPush();
       if (success) {
         setSubscribed(false);
-        alert('Push notifications disabled ✓');
+        toast('Push notifications disabled ✓', "error");
       }
     } else {
       const user = JSON.parse(localStorage.getItem('user'));
@@ -34,9 +36,9 @@ const NotificationSettings = () => {
       
       if (success) {
         setSubscribed(true);
-        alert('Push notifications enabled! You\'ll get alerts even when the app is closed 🔔');
+        toast('Push notifications enabled! You\'ll get alerts even when the app is closed 🔔', "success");
       } else {
-        alert('Failed to enable notifications. Please check browser permissions.');
+        toast('Failed to enable notifications. Please check browser permissions.', "warning");
       }
     }
     
