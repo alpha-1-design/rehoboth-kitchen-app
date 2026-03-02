@@ -8,11 +8,14 @@ passport.use(new GoogleStrategy({
     callbackURL: process.env.GOOGLE_CALLBACK_URL,
 }, async (accessToken, refreshToken, profile, done) => {
     try {
+        console.log('Google profile received:', JSON.stringify(profile));
         const email = profile.emails[0].value;
-        const avatar = profile.photos[0].value;
+        const avatar = profile.photos[0] ? profile.photos[0].value : '';
         const name = profile.displayName;
 
+        console.log('Looking up user:', email);
         let user = await usersDB.findOne({ email });
+        console.log('User found:', user);
 
         if (!user) {
             const newUser = {
