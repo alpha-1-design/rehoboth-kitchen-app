@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { auth, googleProvider } from '../config/firebase';
-import { signInWithPopup, signInWithRedirect, getRedirectResult } from 'firebase/auth';
+
+
 import { useNavigate } from 'react-router-dom';
 import { validateGhanaPhone, validateEmail } from '../utils/validators';
 import { authAPI } from '../services/apiService';
@@ -15,6 +15,22 @@ const Login = () => {
   const OWNER_EMAIL = 'gracee14gn@gmail.com';
   const navigate = useNavigate();
 
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+    const name = params.get('name');
+    const email = params.get('email');
+    const error = params.get('error');
+    if (token) {
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify({ name, email }));
+      window.location.href = '/';
+    }
+    if (error) {
+      alert('Google login failed. Please try again.');
+    }
+  }, []);
 
   useEffect(() => {
     const handleRedirect = async () => {
@@ -67,37 +83,8 @@ const Login = () => {
     return strongRegex.test(password);
   };
 
-  const handleGoogleLogin = async () => {
-    try {
-      const isPWA = window.matchMedia('(display-mode: standalone)').matches;
-      let result;
-      if (isPWA) {
-        await signInWithRedirect(auth, googleProvider);
-        return;
-      } else {
-        result = await signInWithPopup(auth, googleProvider);
-      }
-      const idToken = await result.user.getIdToken();
-      const BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com';
-      const res = await fetch(BASE_URL + '/api/auth/google', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ idToken })
-      });
-      const data = await res.json();
-      if (res.ok) {
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        alert(`Welcome, ${data.user.name}!`);
-        if (data.user.email === OWNER_EMAIL) navigate('/dashboard');
-        else navigate('/');
-      } else {
-        alert(data.message || 'Google login failed');
-      }
-    } catch (err) {
-      console.error(err);
-      alert('Error: ' + err.code + ' - ' + err.message);
-    }
+  const handleGoogleLogin = () => {
+    window.location.href = 'https://rehoboth-backend.onrender.com/api/auth/google'\;
   };
 
   const handleSubmit = async (e) => {
