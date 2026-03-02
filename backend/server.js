@@ -1,4 +1,5 @@
 const express = require('express');
+const passport = require('passport');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const path = require('path');
@@ -29,6 +30,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
+app.use(passport.initialize());
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 

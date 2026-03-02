@@ -187,50 +187,6 @@ const changePassword = async (req, res) => {
 };
 
 
-const googleLogin = async (req, res) => {
-    const { idToken } = req.body;
-    try {
-        const admin = require('../firebaseAdmin');
-        const decoded = await admin.auth().verifyIdToken(idToken);
-        const { name, email, picture } = decoded;
-
-        let user = await db.findOne({ email });
-        if (!user) {
-            // Create new user from Google
-            user = await db.insert({
-                name,
-                email,
-                phone: '',
-                password: '',
-                avatar: picture || '',
-                ghanaPost: '',
-                momoNumber: '',
-                region: 'Ashanti',
-                isAdmin: false,
-                googleAuth: true,
-                createdAt: new Date()
-            });
-        }
-
-        res.json({
-            message: 'Login Successful',
-            token: generateToken(user._id),
-            user: {
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                phone: user.phone,
-                avatar: user.avatar,
-                region: user.region,
-                momoNumber: user.momoNumber,
-                ghanaPost: user.ghanaPost,
-                isAdmin: user.isAdmin || false
-            }
-        });
-    } catch (error) {
-        res.status(401).json({ message: 'Google authentication failed' });
-    }
-};
 
 const fixReferralCodes = async (req, res) => {
     try {
@@ -272,5 +228,5 @@ const resetUserPassword = async (req, res) => {
     } catch (error) { res.status(500).json({ message: error.message }); }
 };
 
-module.exports = { register, login, updateProfile, forgotPassword, changePassword, googleLogin, getUsers, fixReferralCodes, resetUserPassword };
+module.exports = { register, login, updateProfile, forgotPassword, changePassword, getUsers, fixReferralCodes, resetUserPassword };
 
