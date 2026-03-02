@@ -36,9 +36,20 @@ const ScrollToTop = () => {
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
+  const isLoggedIn = !!localStorage.getItem('token');
 
   if (showSplash) {
     return <SplashScreen onFinish={() => setShowSplash(false)} />;
+  }
+
+  if (!isLoggedIn) {
+    return (
+      <Router>
+        <Routes>
+          <Route path="*" element={<Login />} />
+        </Routes>
+      </Router>
+    );
   }
 
   return (
