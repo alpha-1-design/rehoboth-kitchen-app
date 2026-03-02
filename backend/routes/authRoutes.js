@@ -36,9 +36,15 @@ router.get('/google', passport.authenticate('google', { scope: ['profile', 'emai
 router.get('/google/callback',
     passport.authenticate('google', { session: false, failureRedirect: process.env.FRONTEND_URL + '/login?error=google_failed' }),
     async (req, res) => {
-        const jwt = require('jsonwebtoken');
-        const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, { expiresIn: '30d' });
-        res.redirect(process.env.FRONTEND_URL + '/login?token=' + token + '&name=' + encodeURIComponent(req.user.name) + '&email=' + encodeURIComponent(req.user.email));
+        try {
+            const jwt = require('jsonwebtoken');
+            const userId = req.user._id || req.user.id;
+            const token = jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '30d' });
+            res.redirect(process.env.FRONTEND_URL + '/login?token=' + token + '&name=' + encodeURIComponent(req.user.name) + '&email=' + encodeURIComponent(req.user.email));
+        } catch (err) {
+            console.error('Callback error:', err);
+            res.redirect(process.env.FRONTEND_URL + '/login?error=' + encodeURIComponent(err.message));
+        }
     }
 );
 
