@@ -1,6 +1,6 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const { usersDB } = require('../db');
+const { User } = require('../db');
 
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
@@ -14,7 +14,7 @@ passport.use(new GoogleStrategy({
         const name = profile.displayName;
 
         console.log('Looking up user:', email);
-        let user = await usersDB.findOne({ email });
+        let user = await User.findOne({ email });
         console.log('User found:', user);
 
         if (!user) {
@@ -27,8 +27,8 @@ passport.use(new GoogleStrategy({
                 googleId: profile.id,
                 createdAt: new Date().toISOString()
             };
-            await usersDB.insert(newUser);
-            user = await usersDB.findOne({ email });
+            await User.create(newUser);
+            user = await User.findOne({ email });
         }
 
         return done(null, user);
