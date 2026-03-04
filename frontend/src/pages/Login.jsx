@@ -37,11 +37,9 @@ const Login = () => {
   useEffect(() => {
     const handleRedirect = async () => {
       try {
-        const result = await getRedirectResult(auth);
         if (result) {
           const idToken = await result.user.getIdToken();
           const BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com';
-          const res = await fetch(BASE_URL + '/api/auth/google', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ idToken })
@@ -86,7 +84,6 @@ const Login = () => {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = 'https://rehoboth-backend.onrender.com/api/auth/google';
   };
 
   const handleSubmit = async (e) => {
@@ -278,7 +275,6 @@ const Login = () => {
             if (!email) return;
             try {
               const BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com';
-              const res = await fetch(BASE_URL + '/api/auth/forgot-password', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email })
