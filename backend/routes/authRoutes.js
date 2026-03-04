@@ -37,7 +37,11 @@ router.get('/google/test', (req, res) => {
         clientSecret: process.env.GOOGLE_CLIENT_SECRET ? 'SET' : 'MISSING',
         callbackURL: process.env.GOOGLE_CALLBACK_URL || 'MISSING',
         frontendURL: process.env.FRONTEND_URL || 'MISSING',
-        jwtSecret: process.env.JWT_SECRET ? 'SET' : 'MISSING'
+        jwtSecret: process.env.JWT_SECRET ? 'SET' : 'MISSING',
+        vapidPublic: process.env.VAPID_PUBLIC_KEY ? 'SET' : 'MISSING',
+        vapidPrivate: process.env.VAPID_PRIVATE_KEY ? 'SET' : 'MISSING',
+        cloudinary: process.env.CLOUDINARY_CLOUD_NAME ? 'SET' : 'MISSING',
+        mongoUri: process.env.MONGO_URI ? 'SET' : 'MISSING'
     });
 });
 
