@@ -19,6 +19,24 @@ export default defineConfig({
         maximumFileSizeToCacheInBytes: 70 * 1024 * 1024,
         swDest: 'dist/sw.js',
         inlineWorkboxRuntime: true,
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/rehoboth-backend\.onrender\.com\/.*/i,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'api-cache',
+              expiration: { maxEntries: 50, maxAgeSeconds: 60 },
+            },
+          },
+          {
+            urlPattern: /^https:\/\/res\.cloudinary\.com\/.*/i,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'image-cache',
+              expiration: { maxEntries: 100, maxAgeSeconds: 3600 },
+            },
+          },
+        ],
       },
       includeAssets: ['logo.png'],
       manifest: {
