@@ -23,8 +23,8 @@ passport.use(new GoogleStrategy({
                 email,
                 avatar,
                 password: null,
-                role: 'user',
-                googleId: profile.id,
+                googleAuth: true,
+                isAdmin: false,
                 createdAt: new Date().toISOString()
             };
             await User.create(newUser);

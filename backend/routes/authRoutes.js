@@ -30,11 +30,35 @@ router.post('/fix-referrals', protect, admin, fixReferralCodes);
 router.post('/change-password', changePassword);
 
 router.post('/reset-user-password', protect, admin, resetUserPassword);
+// Test route
+router.get('/google/test', (req, res) => {
+    res.json({
+        clientID: process.env.GOOGLE_CLIENT_ID ? 'SET' : 'MISSING',
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET ? 'SET' : 'MISSING',
+        callbackURL: process.env.GOOGLE_CALLBACK_URL || 'MISSING',
+        frontendURL: process.env.FRONTEND_URL || 'MISSING',
+        jwtSecret: process.env.JWT_SECRET ? 'SET' : 'MISSING'
+    });
+});
+
 // Google OAuth routes
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 router.get('/google/callback',
-    passport.authenticate('google', { session: false, failureRedirect: process.env.FRONTEND_URL + '/login?error=google_failed' }),
+    (req, res, next) => {
+        passport.authenticate('google', { session: false }, (err, user, info) => {
+            if (err) {
+                console.error('Passport error:', err.message);
+                return res.redirect(process.env.FRONTEND_URL + '/login?error=' + encodeURIComponent(err.message));
+            }
+            if (!user) {
+                console.error('No user returned:', info);
+                return res.redirect(process.env.FRONTEND_URL + '/login?error=no_user');
+            }
+            req.user = user;
+            next();
+        })(req, res, next);
+    },
     async (req, res) => {
         try {
             const jwt = require('jsonwebtoken');
