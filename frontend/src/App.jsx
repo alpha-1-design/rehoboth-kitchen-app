@@ -52,16 +52,6 @@ function App() {
     return <SplashScreen onFinish={() => setShowSplash(false)} />;
   }
 
-  if (!isLoggedIn) {
-    return (
-      <Router>
-        <Routes>
-          <Route path="*" element={<Login />} />
-        </Routes>
-      </Router>
-    );
-  }
-
   return (
     <Router>
       <ScrollToTop />
@@ -96,8 +86,8 @@ function App() {
           <Route path='/privacy' element={<Privacy />} />
           <Route path='*' element={<Login />} />
         </Routes>
-        <BottomNav />
-        <SupportButton />
+        {isLoggedIn && <BottomNav />}
+        {isLoggedIn && <SupportButton />}
       </div>
     </Router>
   );

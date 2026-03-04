@@ -2,7 +2,7 @@ const express = require('express');
 const passport = require('passport');
 require('../config/passport');
 const router = express.Router();
-const multer = require('multer');
+const { upload } = require('../cloudinary');
 const path = require('path');
 const { resetUserPassword, register, login, updateProfile, forgotPassword, changePassword, getUsers, fixReferralCodes } = require('../controllers/authController');
 const { protect, admin } = require('../middleware/authMiddleware');
@@ -22,7 +22,7 @@ router.post('/register', register);
 router.post('/login', login);
 
 // NEW: Update Profile with Image
-router.put('/profile', upload.single('avatar'), updateProfile);
+router.put('/profile', upload.single('image'), updateProfile);
 router.post('/forgot-password', forgotPassword);
 
 router.get('/users', protect, admin, getUsers);
