@@ -27,37 +27,14 @@ const Login = () => {
     if (token) {
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify({ name, email }));
-      navigate('/');
+      navigate(email === OWNER_EMAIL ? '/dashboard' : '/');
     }
     if (error) {
       toast('Google login failed. Please try again.', "warning");
     }
-  }, []);
+  }, [navigate]);
 
-  useEffect(() => {
-    const handleRedirect = async () => {
-      try {
-        if (result) {
-          const idToken = await result.user.getIdToken();
-          const BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com';
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ idToken })
-          });
-          const data = await res.json();
-          if (res.ok) {
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('user', JSON.stringify(data.user));
-            if (data.user.email === OWNER_EMAIL) navigate('/dashboard');
-            else navigate('/');
-          }
-        }
-      } catch (err) {
-        console.error('Redirect error:', err);
-      }
-    };
-    handleRedirect();
-  }, []);
+
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })), 1000);
