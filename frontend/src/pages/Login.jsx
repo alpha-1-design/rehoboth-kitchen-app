@@ -27,7 +27,7 @@ const Login = () => {
     if (token) {
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify({ name, email }));
-      window.location.href = '/';
+      navigate('/');
     }
     if (error) {
       toast('Google login failed. Please try again.', "warning");

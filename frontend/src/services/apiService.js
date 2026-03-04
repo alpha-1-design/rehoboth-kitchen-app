@@ -4,9 +4,11 @@ import API_BASE_URL from '../config/apiConfig';
 const apiCall = async (endpoint, options = {}) => {
   const url = `${API_BASE_URL}${endpoint}`;
   const isFormData = options.body instanceof FormData;
+  const token = localStorage.getItem('token');
   const defaultOptions = {
     headers: {
       ...(!isFormData && { 'Content-Type': 'application/json' }),
+      ...(token && { 'Authorization': `Bearer ${token}` }),
       ...options.headers,
     },
   };

@@ -25,7 +25,7 @@ const addProduct = async (req, res) => {
             category: req.body.category,
             watts: req.body.watts || '',
             recipes: req.body.recipes || '',
-            image: req.files?.image ? req.files.image[0].path : '',
+            image: req.files?.image ? req.files.image[0].path.replace('http://', 'https://') : '',
             video: req.files?.video ? req.files.video[0].path : '',
             rating: 0,
             numReviews: 0,
