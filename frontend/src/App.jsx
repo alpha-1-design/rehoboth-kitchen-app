@@ -36,7 +36,17 @@ const ScrollToTop = () => {
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
-  const isLoggedIn = !!localStorage.getItem('token');
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
+
+  useEffect(() => {
+    const checkAuth = () => setIsLoggedIn(!!localStorage.getItem('token'));
+    window.addEventListener('storage', checkAuth);
+    const interval = setInterval(checkAuth, 500);
+    return () => {
+      window.removeEventListener('storage', checkAuth);
+      clearInterval(interval);
+    };
+  }, []);
 
   if (showSplash) {
     return <SplashScreen onFinish={() => setShowSplash(false)} />;
