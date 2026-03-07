@@ -40,7 +40,8 @@ const Home = () => {
           setUnreadCount(unread);
         }
       } catch (err) {
-        console.warn('Failed to fetch home data');
+        console.error('Failed to fetch home data:', err.message);
+        toast(err.message || 'Failed to load products', 'error');
       }
       finally {
         setTimeout(() => setLoading(false), 1000);
