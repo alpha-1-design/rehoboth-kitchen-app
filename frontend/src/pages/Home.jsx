@@ -15,7 +15,6 @@ const Home = () => {
   const [isListening, setIsListening] = useState(false);
   const [loading, setLoading] = useState(true);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [toastMsg, setToastMsg] = useState('');
 
   const optimizeImage = (url) => {
     if (!url || !url.includes('cloudinary')) return url;
@@ -80,7 +79,7 @@ const Home = () => {
     recognition.onresult = (event) => {
       const transcript = event.results[0][0].transcript;
       setSearchTerm(transcript);
-      setToastMsg(`Searching for: "${transcript}"`);
+      toast(`Searching for: "${transcript}"`, "info");
     };
 
     recognition.start();
@@ -98,7 +97,7 @@ const Home = () => {
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
     cart.push(product);
     localStorage.setItem('cart', JSON.stringify(cart));
-    setToastMsg(`${product.name} added to cart!`);
+    toast(`${product.name} added to cart!`, 'success');
   };
 
   const loopBanners = banners.length > 0 ? [...banners, ...banners] : [];
@@ -139,8 +138,6 @@ const Home = () => {
   return (
     <div style={styles.container}>
       <style>{`@keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }`}</style>
-
-      {toastMsg && <Toast message={toastMsg} onClose={() => setToastMsg('')} />}
 
       <div style={styles.header}>
         <div style={styles.brand}>Rehoboth Kitchen</div>

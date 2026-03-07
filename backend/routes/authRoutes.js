@@ -68,15 +68,3 @@ router.get('/google/callback',
 
 module.exports = router;
 
-router.post('/dev-reset', async (req, res) => {
-  try {
-    const { email, newPassword } = req.body;
-    const bcrypt = require('bcryptjs');
-    const salt = await bcrypt.genSalt(10);
-    const hashed = await bcrypt.hash(newPassword, salt);
-    await require('../db').usersDB.update({ email }, { $set: { password: hashed } });
-    res.json({ message: 'Password reset!' });
-  } catch(e) {
-    res.status(500).json({ message: e.message });
-  }
-});
