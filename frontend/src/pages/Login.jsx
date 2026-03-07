@@ -61,7 +61,7 @@ const Login = () => {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = 'https://rehoboth-backend.onrender.com/api/auth/google'\;
+    window.location.href = 'https://rehoboth-backend.onrender.com/api/auth/google';
   };
 
   const handleSubmit = async (e) => {
