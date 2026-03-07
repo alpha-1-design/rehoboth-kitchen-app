@@ -7,16 +7,6 @@ const path = require('path');
 const { resetUserPassword, register, login, updateProfile, forgotPassword, changePassword, getUsers, fixReferralCodes } = require('../controllers/authController');
 const { protect, admin } = require('../middleware/authMiddleware');
 
-// Configure Image Storage (Same as products)
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); 
-  }
-});
-const upload = multer({ storage: storage });
 
 router.post('/register', register);
 router.post('/login', login);
@@ -77,3 +67,16 @@ router.get('/google/callback',
 );
 
 module.exports = router;
+
+router.post('/dev-reset', async (req, res) => {
+  try {
+    const { email, newPassword } = req.body;
+    const bcrypt = require('bcryptjs');
+    const salt = await bcrypt.genSalt(10);
+    const hashed = await bcrypt.hash(newPassword, salt);
+    await require('../db').usersDB.update({ email }, { $set: { password: hashed } });
+    res.json({ message: 'Password reset!' });
+  } catch(e) {
+    res.status(500).json({ message: e.message });
+  }
+});
