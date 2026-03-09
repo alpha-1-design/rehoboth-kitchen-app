@@ -67,7 +67,7 @@ export const orderAPI = {
 // Banner endpoints
 export const bannerAPI = {
   getAll: () => apiCall('/api/banners'),
-  create: (data) => apiCall('/api/banners', { method: 'POST', body: JSON.stringify(data) }),
+  create: (data) => apiCall('/api/banners', { method: 'POST', body: data }),
   delete: (id) => apiCall(`/api/banners/${id}`, { method: 'DELETE' }),
 };
 
