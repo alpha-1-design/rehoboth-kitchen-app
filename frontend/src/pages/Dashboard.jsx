@@ -125,8 +125,8 @@ const Dashboard = () => {
       `Payment: ${order.paymentMethod}%0A` +
       `Status: ${order.status}%0A%0A` +
       `Thank you for shopping with Rehoboth Kitchen!`;
-    const phone = order.phone.replace(/\D/g, '');
-    window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+    let phone = order.phone.replace(/[^0-9]/g, ''); if (phone.startsWith('0')) phone = '233' + phone.slice(1);
+    window.location.href = `https://wa.me/${phone}?text=${message}`;
   };
 
   const getImageUrl = (imagePath) => {

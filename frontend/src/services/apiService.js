@@ -61,7 +61,7 @@ export const orderAPI = {
   create: (data) => apiCall('/api/orders', { method: 'POST', body: JSON.stringify(data) }),
   getAll: () => apiCall('/api/orders'),
   getById: (id) => apiCall(`/api/orders/${id}`),
-  update: (id, data) => apiCall(`/api/orders/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  update: (id, data) => apiCall(`/api/orders/${id}/status`, { method: 'PUT', body: JSON.stringify(data) }),
 };
 
 // Banner endpoints
