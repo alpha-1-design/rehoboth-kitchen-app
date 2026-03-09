@@ -29,10 +29,17 @@ const Checkout = () => {
 
     setLoading(true);
 
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
     const orderData = {
-      customer: formData,
-      items: cart,
-      totalAmount: total,
+      customerName: formData.name,
+      phone: formData.phone,
+      location: formData.address,
+      note: formData.note,
+      userEmail: user.email || '',
+      userName: user.name || formData.name,
+      items: cart.map(i => ({ name: i.name, price: i.price, quantity: i.quantity || 1 })),
+      total: total,
+      paymentMethod: 'Cash on Delivery',
       date: new Date().toISOString()
     };
 
