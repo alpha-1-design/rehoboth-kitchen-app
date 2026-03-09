@@ -104,6 +104,31 @@ const Dashboard = () => {
     }
   };
 
+  const updateStatus = async (id, status) => {
+    try {
+      await orderAPI.update(id, { status });
+      fetchData();
+      toast(`Status updated to ${status}`, "success");
+    } catch (err) {
+      toast('Failed to update status', "error");
+    }
+  };
+
+  const sendWhatsAppReceipt = (order) => {
+    const items = order.items.map(i => `• ${i.name} x${i.quantity || 1}`).join('%0A');
+    const message = `*Rehoboth Kitchen Receipt*%0A%0A` +
+      `Customer: ${order.customerName}%0A` +
+      `Phone: ${order.phone}%0A` +
+      `Location: ${order.location}%0A%0A` +
+      `*Items:*%0A${items}%0A%0A` +
+      `*Total: GHS ${order.total}*%0A` +
+      `Payment: ${order.paymentMethod}%0A` +
+      `Status: ${order.status}%0A%0A` +
+      `Thank you for shopping with Rehoboth Kitchen!`;
+    const phone = order.phone.replace(/\D/g, '');
+    window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+  };
+
   const getImageUrl = (imagePath) => {
     if (!imagePath) return '';
     if (imagePath.startsWith('http')) return imagePath;

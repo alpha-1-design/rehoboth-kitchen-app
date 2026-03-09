@@ -1,11 +1,11 @@
-const { Banner } = require('../db');  // Import the Banner model from db.js
+const { bannersDB } = require('../db');
+const { upload } = require('../cloudinary');
 
 const getBanners = async (req, res) => {
     try {
-        const banners = await Banner.find({}).sort({ createdAt: -1 }); // optional: newest first
+        const banners = await bannersDB.find({});
         res.json(banners);
     } catch (error) {
-        console.error('Error fetching banners:', error);
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
@@ -13,36 +13,29 @@ const getBanners = async (req, res) => {
 const addBanner = async (req, res) => {
     try {
         const { title } = req.body;
-        const imagePath = req.file ? `/uploads/${req.file.filename}` : null;
+        const imageUrl = req.file ? req.file.path.replace('http://', 'https://') : null;
 
-        if (!title || !imagePath) {
-            return res.status(400).json({ message: 'Title and image are required' });
+        if (!imageUrl) {
+            return res.status(400).json({ message: 'Image is required' });
         }
 
-        const banner = await Banner.create({
+        const banner = await bannersDB.insert({
             title,
-            image: imagePath,
-            createdAt: new Date()   // optional – Mongoose already has default, but explicit is fine
+            image: imageUrl,
+            createdAt: new Date()
         });
 
         res.status(201).json(banner);
     } catch (error) {
-        console.error('Error adding banner:', error);
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
 
 const deleteBanner = async (req, res) => {
     try {
-        const banner = await Banner.findByIdAndDelete(req.params.id);
-
-        if (!banner) {
-            return res.status(404).json({ message: 'Banner not found' });
-        }
-
-        res.json({ message: 'Banner removed', deletedBanner: banner });
+        await bannersDB.remove({ _id: req.params.id });
+        res.json({ message: 'Banner removed' });
     } catch (error) {
-        console.error('Error deleting banner:', error);
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
