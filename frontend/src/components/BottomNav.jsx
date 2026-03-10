@@ -5,6 +5,18 @@ import Icon from './Icons';
 const BottomNav = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [cartCount, setCartCount] = React.useState(0);
+
+  React.useEffect(() => {
+    const updateCount = () => {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      setCartCount(cart.length);
+    };
+    updateCount();
+    window.addEventListener('storage', updateCount);
+    const interval = setInterval(updateCount, 1000);
+    return () => { window.removeEventListener('storage', updateCount); clearInterval(interval); };
+  }, []);
 
   if (location.pathname === '/login') return null;
 
@@ -53,7 +65,12 @@ const BottomNav = () => {
         </button>
       ) : (
         <button onClick={() => navigate('/cart')} style={styles.btn(isActive('/cart'))}>
-          <Icon name="cart" size={22} color={isActive('/cart') ? '#2C5530' : '#aaa'} />
+          <div style={{position:'relative', display:'inline-flex'}}>
+            <Icon name="cart" size={22} color={isActive('/cart') ? '#2C5530' : '#aaa'} />
+            {cartCount > 0 && (
+              <span style={{position:'absolute', top:'-6px', right:'-8px', background:'#e74c3c', color:'white', borderRadius:'50%', width:'16px', height:'16px', fontSize:'10px', fontWeight:'bold', display:'flex', alignItems:'center', justifyContent:'center'}}>{cartCount}</span>
+            )}
+          </div>
           Cart
         </button>
       )}
