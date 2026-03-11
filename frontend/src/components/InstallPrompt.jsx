@@ -43,7 +43,7 @@ const InstallPrompt = () => {
         console.warn('Installation error');
       }
     } else {
-      console.log("To install:\n1. Tap the browser menu (3 dots)\n2. Tap \'Install App\' or \'Add to Home Screen\'");
+      setShowIOSGuide(true);
     }
   };
 
