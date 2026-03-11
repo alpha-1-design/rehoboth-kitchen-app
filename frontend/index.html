@@ -54,7 +54,13 @@
     </script>
 
     <title>Rehoboth Kitchen - Quality Kitchen Appliances in Ghana | Fast Delivery</title>
-  </head>
+    <script>
+    window.addEventListener('beforeinstallprompt', function(e) {
+      e.preventDefault();
+      window.__installPrompt = e;
+    });
+  </script>
+</head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
