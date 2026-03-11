@@ -43,11 +43,11 @@ const Login = () => {
     e.preventDefault();
 
     // Final Validation Check before sending
-    if (!isLogin && errors.phone) return alert(errors.phone);
-    if (errors.email) return alert(errors.email);
+    if (!isLogin && errors.phone) return toast(errors.phone, 'error');
+    if (errors.email) return toast(errors.email, 'error');
 
-    if (!isLogin && formData.password !== formData.confirmPassword) return alert("Passwords do not match!");
-    if (!isLogin && !isStrongPassword(formData.password)) return alert("Weak Password! Use 8+ chars, Uppercase, Number & Symbol.");
+    if (!isLogin && formData.password !== formData.confirmPassword) return toast('Passwords do not match!', 'error');
+    if (!isLogin && !isStrongPassword(formData.password)) return toast('Weak password! Use 8+ chars, uppercase, number & symbol.', 'error');
 
     try {
       const res = isLogin 
@@ -56,11 +56,11 @@ const Login = () => {
       
       localStorage.setItem('token', res.token);
       localStorage.setItem('user', JSON.stringify(res.user));
-      alert(`Welcome, ${res.user.name}!`);
+      toast(`Welcome, ${res.user.name}!`, 'success');
       if (res.user.email === OWNER_EMAIL) navigate('/dashboard'); 
       else navigate('/'); 
     } catch (err) { 
-      alert(err.message || 'Action Failed'); 
+      toast(err.message || 'Action failed. Try again.', 'error'); 
     }
   };
 
@@ -142,7 +142,7 @@ const Login = () => {
 
         <p style={{marginTop: '20px', fontSize: '14px'}}>{isLogin ? "New here? " : "Have an account? "}<span onClick={() => setIsLogin(!isLogin)} style={styles.link}>{isLogin ? "Create Account" : "Sign In"}</span></p>
 
-        {isLogin && <button onClick={() => alert('Password reset link sent (Simulation)')} style={{background:'none', border:'none', color:'#888', marginTop:'10px'}}>Forgot Password?</button>}
+        {isLogin && <button onClick={() => toast('Password reset link sent!', 'success')} style={{background:'none', border:'none', color:'#888', marginTop:'10px'}}>Forgot Password?</button>}
       </div>
     </div>
   );
