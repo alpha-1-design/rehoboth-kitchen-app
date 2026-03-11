@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import AddProduct from './pages/AddProduct';
+import EditProduct from './pages/EditProduct';
 import AddBanner from './pages/AddBanner';
 import Home from './pages/Home';
 import Cart from './pages/Cart';
@@ -62,6 +63,7 @@ function App() {
           <Route path='/' element={<ProtectedRoute><Home /></ProtectedRoute>} />
           <Route path='/dashboard' element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path='/add-product' element={<ProtectedRoute><AddProduct /></ProtectedRoute>} />
+          <Route path='/edit-product/:id' element={<ProtectedRoute><EditProduct /></ProtectedRoute>} />
           <Route path='/add-banner' element={<ProtectedRoute><AddBanner /></ProtectedRoute>} />
 
           {/* VIDEO ROUTES */}

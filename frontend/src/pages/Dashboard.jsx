@@ -214,9 +214,18 @@ const Dashboard = () => {
           <h4 style={{marginBottom:'10px'}}>Products</h4>
           {products.map((item) => (
             <div key={item._id} style={styles.card}>
-              <div style={{display:'flex', justifyContent:'space-between'}}>
-                <strong>{item.name}</strong>
-                <button onClick={() => handleDeleteProduct(item._id)} style={{ color: 'red', background: 'none', border: 'none' }}>Delete</button>
+              <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+                <div style={{display:'flex', alignItems:'center', gap:'10px'}}>
+                  {item.image && <img src={item.image} alt={item.name} style={{width:'45px', height:'45px', objectFit:'cover', borderRadius:'6px'}} />}
+                  <div>
+                    <strong style={{fontSize:'14px'}}>{item.name}</strong>
+                    <p style={{margin:0, fontSize:'12px', color:'#2C5530'}}>GHS {item.price?.toLocaleString()}</p>
+                  </div>
+                </div>
+                <div style={{display:'flex', gap:'8px'}}>
+                  <button onClick={() => navigate(`/edit-product/${item._id}`)} style={{background:'#2C5530', color:'white', border:'none', padding:'6px 12px', borderRadius:'6px', fontSize:'12px', cursor:'pointer'}}>Edit</button>
+                  <button onClick={() => handleDeleteProduct(item._id)} style={{background:'#fee', color:'red', border:'1px solid red', padding:'6px 12px', borderRadius:'6px', fontSize:'12px', cursor:'pointer'}}>Delete</button>
+                </div>
               </div>
             </div>
           ))}
