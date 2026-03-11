@@ -25,8 +25,9 @@ const Login = () => {
     const email = params.get('email');
     const error = params.get('error');
     if (token) {
+      const googleAuth = params.get('googleAuth') === 'true';
       localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify({ name, email }));
+      localStorage.setItem('user', JSON.stringify({ name, email, googleAuth }));
       navigate(email === OWNER_EMAIL ? '/dashboard' : '/');
     }
     if (error) {

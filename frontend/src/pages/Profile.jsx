@@ -184,7 +184,9 @@ const Profile = () => {
             </>
           )}
           <button onClick={handleSave} style={styles.saveBtn}>Save Details</button>
-          <button onClick={() => setIsChangingPassword(!isChangingPassword)} style={{...styles.saveBtn, background:'#555', marginTop:'10px'}}>🔑 Change Password</button>
+          {!user?.googleAuth && (
+            <button onClick={() => setIsChangingPassword(!isChangingPassword)} style={{...styles.saveBtn, background:'#555', marginTop:'10px'}}>🔑 Change Password</button>
+          )}
           {isChangingPassword && (
             <div style={{marginTop:'15px'}}>
               <label style={styles.label}>Current Password</label>

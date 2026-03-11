@@ -58,7 +58,7 @@ router.get('/google/callback',
             const jwt = require('jsonwebtoken');
             const userId = req.user._id || req.user.id;
             const token = jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '30d' });
-            res.redirect(process.env.FRONTEND_URL + '/login?token=' + token + '&name=' + encodeURIComponent(req.user.name) + '&email=' + encodeURIComponent(req.user.email));
+            res.redirect(process.env.FRONTEND_URL + '/login?token=' + token + '&name=' + encodeURIComponent(req.user.name) + '&email=' + encodeURIComponent(req.user.email) + '&googleAuth=true');
         } catch (err) {
             console.error('Callback error:', err);
             res.redirect(process.env.FRONTEND_URL + '/login?error=' + encodeURIComponent(err.message));
