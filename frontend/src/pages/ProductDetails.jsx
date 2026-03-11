@@ -65,7 +65,16 @@ const ProductDetails = () => {
   };
 
   const addToGiftList = () => {
-    toast("Added to your Gift Registry! Share your profile link with friends so they can buy this for you!", "success");
+    const saved = JSON.parse(localStorage.getItem('wishlist') || '[]');
+    const alreadyAdded = saved.some(item => item._id === product._id);
+    if (alreadyAdded) {
+      toast("Already in your Wishlist!", "warning");
+      return;
+    }
+    saved.push(product);
+    localStorage.setItem('wishlist', JSON.stringify(saved));
+    setInWishlist(true);
+    toast("Added to your Wishlist!", "success");
   };
 
   const submitQuestion = async (e) => {
