@@ -7,7 +7,7 @@ const SupportButton = () => {
 
   // Get User
   const user = JSON.parse(localStorage.getItem('user'));
-  const isAdmin = user && user.email === 'gracee14gn@gmail.com';
+  const isAdmin = user && (user.isAdmin === true || user.email === 'gracee14gn@gmail.com');
 
   // Hide if Login Page OR if User is Admin
   if (location.pathname === '/login') return null;

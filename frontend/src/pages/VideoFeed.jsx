@@ -9,7 +9,7 @@ const VideoFeed = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user'));
-  const isAdmin = user?.email === 'gracee14gn@gmail.com';
+  const isAdmin = user?.isAdmin === true || user?.email === 'gracee14gn@gmail.com';
 
   useEffect(() => {
     const fetchVideos = async () => {

@@ -35,7 +35,7 @@ const Cart = () => {
         setPaymentMethod('Mobile Money');
       }
 
-      if(user.email === 'gracee14gn@gmail.com') setIsAdmin(true);
+      if(user.isAdmin === true || user.email === 'gracee14gn@gmail.com') setIsAdmin(true);
     }
   }, []);
 

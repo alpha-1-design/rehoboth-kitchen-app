@@ -27,8 +27,9 @@ const Login = () => {
     if (token) {
       const googleAuth = params.get('googleAuth') === 'true';
       localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify({ name, email, googleAuth }));
-      navigate(email === OWNER_EMAIL ? '/dashboard' : '/');
+      const isAdminUser = email === OWNER_EMAIL;
+      localStorage.setItem('user', JSON.stringify({ name, email, googleAuth, isAdmin: isAdminUser }));
+      navigate(isAdminUser ? '/dashboard' : '/');
     }
     if (error) {
       toast('Google login failed. Please try again.', "warning");
