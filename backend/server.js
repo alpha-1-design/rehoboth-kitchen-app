@@ -48,3 +48,14 @@ app.get('/', (req, res) => res.send('Rehoboth API Running'));
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 // force deploy Wed Mar  4 13:15:04 GMT 2026
+
+
+// Keep Render awake - ping every 14 minutes
+const http = require('http');
+setInterval(() => {
+  http.get('http://localhost:' + (process.env.PORT || 5000) + '/', (res) => {
+    console.log('Keep-alive ping:', res.statusCode);
+  }).on('error', (e) => {
+    console.log('Keep-alive error:', e.message);
+  });
+}, 14 * 60 * 1000);
