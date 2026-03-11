@@ -120,7 +120,7 @@ const Profile = () => {
 
   const getAvatarUrl = (path) => {
     if (preview) return preview;
-    if (!path) return 'https://via.placeholder.com/150?text=User';
+    if (!path) return '/logo.png?text=User';
     return `${import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com'}${path}`;
   };
 

@@ -87,7 +87,7 @@ const Home = () => {
   };
 
   const getImageUrl = (imagePath) => {
-    if (!imagePath) return 'https://via.placeholder.com/150?text=No+Image';
+    if (!imagePath) return '/logo.png';
     if (imagePath.startsWith('http')) return imagePath;
     const API_BASE_URL = 'https://rehoboth-backend.onrender.com';
     return `${API_BASE_URL}${imagePath}`;
@@ -196,7 +196,7 @@ const Home = () => {
         ) : (
           filteredProducts.map((item) => (
             <div key={item._id} style={styles.card} onClick={() => navigate(`/product/${item._id}`)}>
-              <img src={optimizeImage(getImageUrl(item.image))} loading="lazy" alt={item.name} style={styles.img} onError={(e) => {e.target.src='https://via.placeholder.com/150'}}/>
+              <img src={optimizeImage(getImageUrl(item.image))} loading="lazy" alt={item.name} style={styles.img} onError={(e) => {e.target.src='/logo.png'}}/>
               <div style={styles.details}>
                 <h4 style={styles.name}>{item.name}</h4>
                 <div style={styles.price}>GHS {item.price}</div>
