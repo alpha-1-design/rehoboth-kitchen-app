@@ -83,6 +83,16 @@ const updateOrderStatus = async (req, res) => {
 
         await createNotification(order.userEmail, `Your order #${req.params.id.slice(-6).toUpperCase()} is now ${status}`);
 
+        const statusEmoji = { Confirmed: '✅', Processing: '👨‍🍳', Shipped: '🚚', Delivered: '🎉', Cancelled: '❌' };
+        sendNotification({
+            body: {
+                title: `${statusEmoji[status] || '📦'} Order ${status}!`,
+                body: `Your order #${req.params.id.slice(-6).toUpperCase()} is now ${status}`,
+                icon: '/logo.png',
+                data: { orderId: req.params.id, type: 'status_update' }
+            }
+        }, { json: () => {} });
+
         res.json({ message: 'Status updated' });
     } catch (error) { res.status(500).json({ message: error.message }); }
 };
