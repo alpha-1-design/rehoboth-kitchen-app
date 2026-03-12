@@ -89,10 +89,14 @@ const ProductDetails = () => {
         body: JSON.stringify({ question, userName: user.name })
       });
       const data = await res.json();
-      toast(data.message, "error");
-      setQuestion('');
-      const updated = await fetch(BASE_URL + `/api/products/${id}`);
-      setProduct(await updated.json());
+      if (res.ok) {
+        toast('Question submitted! ✅', "success");
+        setQuestion('');
+        const updated = await fetch(BASE_URL + `/api/products/${id}`);
+        setProduct(await updated.json());
+      } else {
+        toast(data.message || 'Failed to submit question', "error");
+      }
     } catch (err) {
       toast('Failed to submit question', "error");
     }
