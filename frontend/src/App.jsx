@@ -86,7 +86,7 @@ function App() {
           <Route path='/suggestions' element={<ProtectedRoute><Suggestions /></ProtectedRoute>} />
 
           <Route path='/privacy' element={<Privacy />} />
-          <Route path='*' element={<Login />} />
+          <Route path='*' element={<Home />} />
         </Routes>
         {isLoggedIn && <BottomNav />}
         {isLoggedIn && <SupportButton />}
