@@ -83,8 +83,13 @@ const Login = () => {
       localStorage.setItem('user', JSON.stringify(res.user));
       toast(`Welcome, ${res.user.name}!`, "success");
       setTimeout(() => {
-        if (res.user.email === OWNER_EMAIL) navigate('/dashboard');
-        else navigate('/');
+        if (res.user.isAdmin) {
+          navigate('/dashboard');
+        } else {
+          const redirect = localStorage.getItem('redirectAfterLogin') || '/';
+          localStorage.removeItem('redirectAfterLogin');
+          navigate(redirect);
+        }
       }, 500);
     } catch (err) { 
       toast(err.message || 'Action Failed', "error"); 

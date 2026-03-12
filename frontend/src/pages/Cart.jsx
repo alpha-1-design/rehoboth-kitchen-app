@@ -122,7 +122,15 @@ const Cart = () => {
             </div>
 
             {!showForm ? (
-              <button onClick={() => setShowForm(true)} style={styles.checkoutBtn}>
+              <button onClick={() => {
+                const user = JSON.parse(localStorage.getItem('user'));
+                if (!user) {
+                  localStorage.setItem('redirectAfterLogin', '/cart');
+                  navigate('/login');
+                } else {
+                  setShowForm(true);
+                }
+              }} style={styles.checkoutBtn}>
                 Proceed to Checkout
               </button>
             ) : (
