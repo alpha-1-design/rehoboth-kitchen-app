@@ -29,13 +29,20 @@ export default function MyOrders() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-  useEffect(() => {
+  const loadOrders = () => {
     if (!user.email) { navigate('/login'); return; }
     orderAPI.getAll().then(data => {
       const myOrders = Array.isArray(data) ? data.filter(o => o.userEmail === user.email) : [];
       setOrders(myOrders.reverse());
       setLoading(false);
     }).catch(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    loadOrders();
+    // Auto refresh every 30 seconds
+    const interval = setInterval(loadOrders, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   if (loading) return <div style={{display:'flex',justifyContent:'center',alignItems:'center',height:'100vh'}}><p>Loading orders...</p></div>;
