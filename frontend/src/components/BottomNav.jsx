@@ -76,7 +76,7 @@ const BottomNav = () => {
 
       <button onClick={handleAccountClick} style={styles.btn(isActive('/profile'))}>
         <Icon name="user" size={22} color={isActive('/profile') ? '#2C5530' : '#aaa'} />
-        {user ? 'Me' : 'Account'}
+        {user ? 'Me' : 'Login'}
       </button>
     </div>
   );
