@@ -114,7 +114,41 @@ const Profile = () => {
     } catch (err) { toast("Update failed", "error"); }
   };
 
-  if (!user) return null;
+  if (!user) return (
+    <div style={{minHeight:'100vh', background:'#f8f8f8', paddingBottom:'80px'}}>
+      <div style={{background:'#2C5530', padding:'60px 20px 30px', textAlign:'center'}}>
+        <div style={{width:'80px', height:'80px', borderRadius:'50%', background:'rgba(255,255,255,0.2)', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 15px', fontSize:'36px'}}>👤</div>
+        <h2 style={{color:'white', margin:'0 0 5px'}}>Welcome!</h2>
+        <p style={{color:'rgba(255,255,255,0.7)', margin:0, fontSize:'14px'}}>Sign in to access your account</p>
+      </div>
+      <div style={{padding:'30px 20px'}}>
+        <button onClick={() => navigate('/login')} style={{width:'100%', padding:'16px', background:'#2C5530', color:'white', border:'none', borderRadius:'12px', fontSize:'16px', fontWeight:'bold', marginBottom:'12px', cursor:'pointer'}}>
+          🔑 Login
+        </button>
+        <button onClick={() => { localStorage.setItem('authMode', 'register'); navigate('/login'); }} style={{width:'100%', padding:'16px', background:'white', color:'#2C5530', border:'2px solid #2C5530', borderRadius:'12px', fontSize:'16px', fontWeight:'bold', marginBottom:'30px', cursor:'pointer'}}>
+          ✨ Create Account
+        </button>
+        <div style={{background:'white', borderRadius:'12px', padding:'20px', marginBottom:'12px'}}>
+          <h3 style={{color:'#2C5530', margin:'0 0 15px', fontSize:'16px'}}>Why create an account?</h3>
+          <div style={{display:'flex', alignItems:'center', gap:'12px', marginBottom:'12px'}}>
+            <span style={{fontSize:'22px'}}>📦</span>
+            <div><p style={{margin:0, fontWeight:'bold', fontSize:'14px'}}>Track your orders</p><p style={{margin:0, color:'#888', fontSize:'12px'}}>See live status of all your orders</p></div>
+          </div>
+          <div style={{display:'flex', alignItems:'center', gap:'12px', marginBottom:'12px'}}>
+            <span style={{fontSize:'22px'}}>❤️</span>
+            <div><p style={{margin:0, fontWeight:'bold', fontSize:'14px'}}>Save your wishlist</p><p style={{margin:0, color:'#888', fontSize:'12px'}}>Keep products you love in one place</p></div>
+          </div>
+          <div style={{display:'flex', alignItems:'center', gap:'12px'}}>
+            <span style={{fontSize:'22px'}}>⚡</span>
+            <div><p style={{margin:0, fontWeight:'bold', fontSize:'14px'}}>Faster checkout</p><p style={{margin:0, color:'#888', fontSize:'12px'}}>Your details saved for next time</p></div>
+          </div>
+        </div>
+        <p style={{textAlign:'center', color:'#aaa', fontSize:'12px', marginTop:'20px'}}>
+          You can still browse and add to cart without an account
+        </p>
+      </div>
+    </div>
+  );
   
   const isAdmin = user && user.isAdmin === true;
 

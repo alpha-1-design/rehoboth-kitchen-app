@@ -78,7 +78,7 @@ function App() {
           <Route path='/product/:id' element={<ProductDetails />} />
           <Route path='/cart' element={<Cart />} />
           <Route path='/success' element={<ProtectedRoute><CheckoutSuccess /></ProtectedRoute>} />
-          <Route path='/profile' element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path='/profile' element={<Profile />} />
           <Route path='/about' element={<About />} />
           <Route path='/support' element={<ProtectedRoute><SupportChat /></ProtectedRoute>} />
           <Route path='/my-reviews' element={<ProtectedRoute><MyReviews /></ProtectedRoute>} />

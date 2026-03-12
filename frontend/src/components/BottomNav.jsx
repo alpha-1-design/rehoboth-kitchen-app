@@ -25,8 +25,7 @@ const BottomNav = () => {
   const isAdmin = user && (user.isAdmin === true || user.email === 'gracee14gn@gmail.com');
 
   const handleAccountClick = () => {
-    if (!user) navigate('/login');
-    else navigate('/profile');
+    navigate('/profile');
   };
 
   const styles = {
