@@ -23,22 +23,26 @@ const Dashboard = () => {
 
 
   const fetchData = async () => {
-    try {
-      const [resProd, resOrd, resBan, resMsg, resUsers] = await Promise.all([
-        productAPI.getAll(),
-        orderAPI.getAll(),
-        bannerAPI.getAll(),
-        supportAPI.getMessages(),
-        fetch((import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com') + '/api/auth/users', { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }).then(r => r.json())
-      ]);
-      setProducts(resProd);
-      setOrders(resOrd.reverse());
-      setBanners(resBan);
-      setMessages(resMsg.reverse());
-      setUsers(Array.isArray(resUsers) ? resUsers : []);
-    } catch (err) {
-      console.warn('Failed to fetch data');
-    }
+    const BASE_URL = import.meta.env.VITE_API_URL || 'https://rehoboth-backend.onrender.com';
+    
+    // Fetch each independently so one failure doesn't crash the whole dashboard
+    try { const res = await productAPI.getAll(); setProducts(res); } 
+    catch (err) { toast('Failed to load products', 'error'); }
+    
+    try { const res = await orderAPI.getAll(); setOrders(res.reverse()); } 
+    catch (err) { toast('Failed to load orders', 'error'); }
+    
+    try { const res = await bannerAPI.getAll(); setBanners(res); } 
+    catch (err) { toast('Failed to load banners', 'error'); }
+    
+    try { const res = await supportAPI.getMessages(); setMessages(res.reverse()); } 
+    catch (err) { toast('Failed to load messages', 'error'); }
+    
+    try { 
+      const res = await fetch(BASE_URL + '/api/auth/users', { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
+      const data = await res.json();
+      setUsers(Array.isArray(data) ? data : []);
+    } catch (err) { toast('Failed to load users', 'error'); }
   };
 
   const handleLogout = () => {
