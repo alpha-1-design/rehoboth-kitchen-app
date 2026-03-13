@@ -11,7 +11,7 @@ const Notifications = () => {
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user'));
-    if (!user) return navigate('/login');
+    if (!user) { setLoading(false); return; }
 
     const fetchNotifications = async () => {
       try {
@@ -44,6 +44,23 @@ const Notifications = () => {
     card: { background: 'white', padding: '15px', borderRadius: '10px', marginBottom: '10px', borderLeft: '5px solid #2C5530', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' },
     date: { fontSize: '10px', color: '#888', marginTop: '5px' }
   };
+
+  const user = JSON.parse(localStorage.getItem('user'));
+
+  if (!user) return (
+    <div style={{minHeight:'100vh', background:'#f8f8f8', paddingBottom:'80px'}}>
+      <div style={{background:'#2C5530', padding:'60px 20px 30px', textAlign:'center'}}>
+        <div style={{fontSize:'50px', marginBottom:'10px'}}>🔔</div>
+        <h2 style={{color:'white', margin:'0 0 5px'}}>Notifications</h2>
+        <p style={{color:'rgba(255,255,255,0.7)', margin:0, fontSize:'14px'}}>Login to see your notifications</p>
+      </div>
+      <div style={{padding:'30px 20px'}}>
+        <button onClick={() => { localStorage.setItem('redirectAfterLogin', '/notifications'); navigate('/login'); }} style={{width:'100%', padding:'16px', background:'#2C5530', color:'white', border:'none', borderRadius:'12px', fontSize:'16px', fontWeight:'bold', cursor:'pointer'}}>
+          🔑 Login to Continue
+        </button>
+      </div>
+    </div>
+  );
 
   return (
     <div style={styles.container}>
