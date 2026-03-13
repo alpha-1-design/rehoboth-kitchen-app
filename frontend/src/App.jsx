@@ -83,6 +83,7 @@ function App() {
           <Route path='/support' element={<ProtectedRoute><SupportChat /></ProtectedRoute>} />
           <Route path='/my-reviews' element={<ProtectedRoute><MyReviews /></ProtectedRoute>} />
           <Route path='/notifications' element={<Notifications />} />
+          <Route path='/my-orders' element={<MyOrders />} />
           <Route path='/suggestions' element={<ProtectedRoute><Suggestions /></ProtectedRoute>} />
 
           <Route path='/privacy' element={<Privacy />} />
