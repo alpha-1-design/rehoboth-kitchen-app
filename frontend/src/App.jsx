@@ -36,18 +36,21 @@ const ScrollToTop = () => {
 
   useEffect(() => {
     const lastVersion = localStorage.getItem('appVersion');
-    if (!lastVersion) {
-      localStorage.setItem('appVersion', versionData.version);
-    } else if (lastVersion !== versionData.version) {
-      localStorage.setItem('appVersion', versionData.version);
-      const changelog = versionData.changelog?.[versionData.version] || 'New updates available';
+    const showToast = (msg, isNew) => {
       setTimeout(() => {
         const toast = document.createElement('div');
-        toast.innerText = '🎉 Updated to v' + versionData.version + ' — ' + changelog;
-        toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#2C5530;color:white;padding:12px 20px;border-radius:12px;font-size:13px;z-index:9999;max-width:90%;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.3);font-family:sans-serif;';
+        toast.innerText = msg;
+        toast.style.cssText = `position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:${isNew ? '#2C5530' : '#1a3a2a'};color:white;padding:12px 20px;border-radius:12px;font-size:13px;z-index:9999;max-width:90%;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.3);font-family:sans-serif;transition:opacity 0.5s;`;
         document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 5000);
+        setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 500); }, 3000);
       }, 2000);
+    };
+    if (!lastVersion || lastVersion !== versionData.version) {
+      localStorage.setItem('appVersion', versionData.version);
+      const changelog = versionData.changelog?.[versionData.version] || 'New updates available';
+      showToast('🎉 Updated to v' + versionData.version + ' — ' + changelog, true);
+    } else {
+      showToast('✅ You are on the latest version (v' + versionData.version + ')', false);
     }
   }, []);
   return null;
