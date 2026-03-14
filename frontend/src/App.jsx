@@ -35,22 +35,24 @@ const ScrollToTop = () => {
   useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
 
   useEffect(() => {
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').then(reg => {
-        reg.addEventListener('updatefound', () => {
-          const newWorker = reg.installing;
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              // New version available — show toast with reload button
-              const toast = document.createElement('div');
-              toast.innerHTML = '🔄 New update available! <button onclick="window.location.reload()" style="margin-left:10px;background:white;color:#2C5530;border:none;border-radius:6px;padding:4px 10px;font-weight:bold;cursor:pointer;font-size:12px;">Reload</button>';
-              toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#2C5530;color:white;padding:12px 20px;border-radius:12px;font-size:13px;z-index:9999;max-width:92%;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.3);font-family:sans-serif;display:flex;align-items:center;gap:6px;white-space:nowrap;';
-              document.body.appendChild(toast);
-            }
-          });
-        });
-      });
-    }
+    // Fetch live version.json and compare to stored version
+    fetch('/version.json?t=' + Date.now())
+      .then(r => r.json())
+      .then(data => {
+        const stored = localStorage.getItem('appVersion');
+        if (stored && stored !== data.version) {
+          // New version detected — clear cache and reload
+          localStorage.setItem('appVersion', data.version);
+          if ('caches' in window) {
+            caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k)))).then(() => window.location.reload());
+          } else {
+            window.location.reload();
+          }
+        } else if (!stored) {
+          localStorage.setItem('appVersion', data.version);
+        }
+      })
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
