@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import versionData from '../version.json';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -32,6 +33,23 @@ import MyOrders from './pages/MyOrders';
 const ScrollToTop = () => {
   const { pathname } = useLocation();
   useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+
+  useEffect(() => {
+    const lastVersion = localStorage.getItem('appVersion');
+    if (!lastVersion) {
+      localStorage.setItem('appVersion', versionData.version);
+    } else if (lastVersion !== versionData.version) {
+      localStorage.setItem('appVersion', versionData.version);
+      const changelog = versionData.changelog?.[versionData.version] || 'New updates available';
+      setTimeout(() => {
+        const toast = document.createElement('div');
+        toast.innerText = '🎉 Updated to v' + versionData.version + ' — ' + changelog;
+        toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#2C5530;color:white;padding:12px 20px;border-radius:12px;font-size:13px;z-index:9999;max-width:90%;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.3);font-family:sans-serif;';
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 5000);
+      }, 2000);
+    }
+  }, []);
   return null;
 };
 
