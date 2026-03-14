@@ -60,14 +60,14 @@ function App() {
       <div style={{ paddingBottom: '70px' }}>
         <Routes>
           <Route path='/login' element={<Login />} />
-          <Route path='/' element={<Home />} />
+          <Route path='/' element={<ProtectedRoute><Home /></ProtectedRoute>} />
           <Route path='/dashboard' element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path='/add-product' element={<ProtectedRoute><AddProduct /></ProtectedRoute>} />
           <Route path='/edit-product/:id' element={<ProtectedRoute><EditProduct /></ProtectedRoute>} />
           <Route path='/add-banner' element={<ProtectedRoute><AddBanner /></ProtectedRoute>} />
 
           {/* VIDEO ROUTES */}
-          <Route path='/videos' element={<VideoFeed />} />
+          <Route path='/videos' element={<ProtectedRoute><VideoFeed /></ProtectedRoute>} />
           <Route path='/add-video' element={<ProtectedRoute><AddVideo /></ProtectedRoute>} />
         <Route path='/wishlist' element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
 
@@ -75,19 +75,19 @@ function App() {
           <Route path="/notification-settings" element={<NotificationSettings />} />
 
           {/* OTHER ROUTES */}
-          <Route path='/product/:id' element={<ProductDetails />} />
-          <Route path='/cart' element={<Cart />} />
+          <Route path='/product/:id' element={<ProtectedRoute><ProductDetails /></ProtectedRoute>} />
+          <Route path='/cart' element={<ProtectedRoute><Cart /></ProtectedRoute>} />
           <Route path='/success' element={<ProtectedRoute><CheckoutSuccess /></ProtectedRoute>} />
-          <Route path='/profile' element={<Profile />} />
-          <Route path='/about' element={<About />} />
+          <Route path='/profile' element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path='/about' element={<ProtectedRoute><About /></ProtectedRoute>} />
           <Route path='/support' element={<ProtectedRoute><SupportChat /></ProtectedRoute>} />
           <Route path='/my-reviews' element={<ProtectedRoute><MyReviews /></ProtectedRoute>} />
-          <Route path='/notifications' element={<Notifications />} />
-          <Route path='/my-orders' element={<MyOrders />} />
+          <Route path='/notifications' element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
+          <Route path='/my-orders' element={<ProtectedRoute><MyOrders /></ProtectedRoute>} />
           <Route path='/suggestions' element={<ProtectedRoute><Suggestions /></ProtectedRoute>} />
 
           <Route path='/privacy' element={<Privacy />} />
-          <Route path='*' element={<Home />} />
+          <Route path='*' element={<Login />} />
         </Routes>
         {isLoggedIn && <BottomNav />}
         {isLoggedIn && <SupportButton />}
